@@ -1,0 +1,112 @@
+@import url("https://fonts.googleapis.com/css2?family=Assistant&display=swap");
+
+.boards-main {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  //   background-color: #88bbe4;
+  justify-content: center;
+
+  .boards-container {
+    display: flex;
+    width: 50%;
+    margin-top: 25px;
+    // justify-content: center;
+    flex-direction: column;
+    // background-color: green;
+    .created-boards-container {
+      display: flex;
+      flex-direction: column;
+      //   background-color: purple;
+      width: 100%;
+
+      .created-boards-header {
+        display: flex;
+        align-items: center;
+        font-size: 20px;
+        // background-color: yellow;
+        .board-icon {
+          font-size: 22px;
+          margin-right: 5px;
+        }
+        h3 {
+          margin-left: 5px;
+          font-family: "Assistant", sans-serif;
+        }
+      }
+      .boards-container {
+        display: flex;
+        // background-color: red;
+        width: 100%;
+        flex-wrap: wrap;
+        flex-direction: row;
+      }
+    }
+    .board-card {
+      display: flex;
+      padding: 8px;
+      flex-direction: column;
+      background-color: rgb(85, 147, 219);
+      width: 260px;
+      max-width: 260px;
+      height: 110px;
+      border-radius: 5px;
+      margin-right: 20px;
+      cursor: pointer;
+
+      .board-name {
+        font-size: 20px;
+        color: white;
+      }
+      .board-description {
+        font-size: 16px;
+        color: rgba(255, 255, 255, 0.897);
+      }
+      .board-users {
+        display: flex;
+        justify-content: flex-end;
+        width: 100%;
+        img {
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
+          margin-right: 5px;
+        }
+        img:hover {
+          cursor: default;
+        }
+      }
+    }
+    .board-card:hover {
+      box-shadow: rgba(0, 0, 0, 0.145) 0 0 10px;
+    }
+    .joined-boards-container {
+      display: flex;
+      margin-top: 50px;
+      flex-direction: column;
+      //   background-color: purple;
+      width: 100%;
+      .boards-container {
+        display: flex;
+        // background-color: red;
+        width: 100%;
+        flex-wrap: wrap;
+        flex-direction: row;
+      }
+      .joined-boards-header {
+        display: flex;
+        align-items: center;
+        font-size: 20px;
+        // background-color: yellow;
+        .board-icon {
+          font-size: 22px;
+          margin-right: 5px;
+        }
+        h3 {
+          margin-left: 5px;
+          font-family: "Assistant", sans-serif;
+        }
+      }
+    }
+  }
+}

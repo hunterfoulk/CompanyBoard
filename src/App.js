@@ -1,25 +1,85 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import "./App.css";
+import Navbar from "./components/navbar/navbar";
+import Login from "./components/auth/login";
+import Signup from "./components/auth/signup";
+import Home from "./pages/home/home";
+import Boards from "./pages/boards/boards";
+import CreateBoard from "./components/createboard/createboard";
+import Board from "./pages/currentboard/board";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Router>
+        <div className="app-container">
+          <Route
+            exact
+            path="/"
+            render={() => (
+              <>
+                <Login />
+              </>
+            )}
+          ></Route>
+
+          <Route
+            exact
+            path="/signup"
+            render={() => (
+              <>
+                <Signup />
+              </>
+            )}
+          ></Route>
+
+          <Route
+            exact
+            path="/home"
+            render={() => (
+              <>
+                <Navbar />
+                <Home />
+              </>
+            )}
+          ></Route>
+
+          <Route
+            exact
+            path="/createboard"
+            render={() => (
+              <>
+                <Navbar />
+                <CreateBoard />
+              </>
+            )}
+          ></Route>
+
+          <Route
+            exact
+            path="/boards"
+            render={() => (
+              <>
+                <Navbar />
+                <Boards />
+              </>
+            )}
+          ></Route>
+
+          <Route
+            exact
+            path="/board/:board_id"
+            render={() => (
+              <>
+                <Navbar />
+                <Board />
+              </>
+            )}
+          ></Route>
+        </div>
+      </Router>
+    </>
   );
 }
 
