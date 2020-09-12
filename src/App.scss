@@ -1,0 +1,12 @@
+.app-container {
+  display: flex;
+  flex-direction: column;
+  /* background-color: rgb(190, 119, 119); */
+}
+.backdrop {
+  position: fixed;
+  height: 100vh;
+  width: 100vw;
+  z-index: 100;
+  background-color: rgba($color: black, $alpha: 0.4);
+}

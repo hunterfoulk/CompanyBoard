@@ -111,6 +111,8 @@ const useBoards = () => {
           response[i].tasks = res.data;
           res.data.forEach((res) => {
             res.hovering = false;
+            res.editing = false;
+            res.editingName = false;
           });
 
           if (count === response.length) {
@@ -148,6 +150,22 @@ const useBoards = () => {
   };
 
   const createNewTask = async (payload, clearForm) => {
+    console.log("payload", payload);
+    console.log("payload board id", payload.board_id);
+    let board_id = payload.board_id;
+    axios
+      .post(
+        `http://localhost:9000/.netlify/functions/server/companyboard/newtask`,
+        payload
+      )
+      .then((res) => {
+        console.log("new new task", res.data);
+        getCurrentBoardStatuses(board_id);
+      })
+      .catch((error) => console.error("videos not fetched succesfully", error));
+  };
+
+  const updateTask = async (payload, clearForm) => {
     console.log("payload", payload);
     console.log("payload board id", payload.board_id);
     let board_id = payload.board_id;

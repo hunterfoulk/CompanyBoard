@@ -1,19 +1,33 @@
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import "./App.css";
+import "./App.scss";
 import Navbar from "./components/navbar/navbar";
 import Login from "./components/auth/login";
 import Signup from "./components/auth/signup";
 import Home from "./pages/home/home";
 import Boards from "./pages/boards/boards";
 import CreateBoard from "./components/createboard/createboard";
+import { useStateValue } from "./state";
 import Board from "./pages/currentboard/board";
 
-function App() {
+const App = () => {
+  const [
+    {
+      auth,
+      components,
+      createdBoards,
+      joinedBoards,
+      currentBoardUsers,
+      currentBoardData,
+    },
+    dispatch,
+  ] = useStateValue();
+
   return (
     <>
       <Router>
         <div className="app-container">
+          {components.backdrop && <div className="backdrop"></div>}
           <Route
             exact
             path="/"
@@ -81,6 +95,6 @@ function App() {
       </Router>
     </>
   );
-}
+};
 
 export default App;

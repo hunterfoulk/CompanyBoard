@@ -8,6 +8,10 @@ import { IoMdAdd } from "react-icons/io";
 import useInput from "../../components/hooks/useInput";
 import { MdClose } from "react-icons/md";
 import { MdEdit } from "react-icons/md";
+import { FaEdit } from "react-icons/fa";
+import { MdPerson } from "react-icons/md";
+
+import { Modal } from "godspeed";
 
 export default function Board() {
   const {
@@ -33,7 +37,9 @@ export default function Board() {
   const [fixed, setFixed] = useState(false);
   const statusName = useInput("");
   const taskName = useInput("");
-  const [hovering, setHovering] = useState(false);
+  const [editingName, setEditingName] = useState(false);
+  const [backdrop, setBackdrop] = useState(false);
+  const [editDefault, setEditDefault] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -48,9 +54,6 @@ export default function Board() {
 
     createNewStatus(payload, clearForm);
   };
-
-  console.log("current board 123", currentBoardUsers.board);
-  console.log("current id", currentBoardUsers.board.board_id);
 
   const fullPath = window.location.pathname;
   let board_id = window.location.pathname.replace("/board/", "");
@@ -83,22 +86,6 @@ export default function Board() {
     console.log("status", status);
   };
 
-  // const toggleHoveringOn = (task_id, index) => {
-  //   let copy = [...currentBoardData.statuses.tasks];
-
-  //   copy[index].hovering = true;
-
-  //   dispatch({
-  //     type: "CURRENT_BOARD_STATUSES",
-  //     currentBoardData: {
-  //       ...currentBoardData,
-  //       statuses: copy,
-  //     },
-  //   });
-
-  //   console.log("task_id", task_id);
-  // };
-
   const toggleHoveringOn = (task_id, index) => {
     let copy = [...currentBoardData.statuses];
     copy.map((status, i) => {
@@ -126,7 +113,6 @@ export default function Board() {
       if (i === index) {
         status.tasks.map((task, i) => {
           if (task.task_id === task_id) {
-            console.log("tasks", task);
             task.hovering = false;
           }
         });
@@ -144,7 +130,7 @@ export default function Board() {
   const closeToggle = (status_id, index) => {
     console.log("status id for close", status_id);
 
-    let copy = [...currentBoardData.statuses.tasks];
+    let copy = [...currentBoardData.statuses];
     console.log("copy index", copy[index]);
     copy[index].open = false;
 
@@ -175,9 +161,89 @@ export default function Board() {
     createNewTask(payload, clearForm);
   };
 
+  const [editId, setEditId] = useState({});
+  const handleEdit = (task_id, index) => {
+    let copy = [...currentBoardData.statuses];
+
+    copy.map((status, i) => {
+      if (i === index) {
+        status.tasks.map((task, i) => {
+          if (task.task_id === task_id) {
+            console.log("this is task", task);
+            setEditId(task);
+
+            task.editing = true;
+          }
+        });
+      }
+    });
+    console.log("edit id", editId);
+
+    dispatch({
+      type: "CURRENT_BOARD_STATUSES",
+      currentBoardData: {
+        ...currentBoardData,
+        statuses: copy,
+      },
+    });
+  };
+
+  const handleEditClose = (task_id, index) => {
+    console.log("FIRED");
+    let copy = [...currentBoardData.statuses];
+    console.log(task_id);
+    copy.map((status, i) => {
+      if (i === index) {
+        status.tasks.map((task, i) => {
+          console.log("task id for close", task_id);
+          console.log(task);
+
+          task.editing = false;
+          task.hovering = false;
+        });
+      }
+    });
+
+    dispatch({
+      type: "CURRENT_BOARD_STATUSES",
+      currentBoardData: {
+        ...currentBoardData,
+        statuses: copy,
+      },
+    });
+  };
+
+  const editNameHandler = (task_id, index) => {
+    console.log(task_id);
+
+    let copy = [...currentBoardData.statuses];
+    console.log(task_id);
+    copy.map((status, i) => {
+      if (i === index) {
+        status.tasks.map((task, i) => {
+          console.log("task id for close", task_id);
+          console.log(task);
+          task.editingName = true;
+          setEditDefault(task.message);
+        });
+      }
+    });
+
+    dispatch({
+      type: "CURRENT_BOARD_STATUSES",
+      currentBoardData: {
+        ...currentBoardData,
+        statuses: copy,
+      },
+    });
+  };
+
+  console.log("edit name", editDefault);
+
   return (
     <>
       <div className="current-board-main">
+        {components.backdrop && <div className="backdrop"></div>}
         <div className="board-header">
           <div className="board-header-left">
             <span className="board-name">
@@ -235,32 +301,136 @@ export default function Board() {
                 <div className="tasks-container">
                   {status.tasks.map((task) => (
                     <>
-                      {task.hovering ? (
-                        <div
-                          className="task"
-                          onMouseEnter={() =>
-                            toggleHoveringOn(task.task_id, index)
-                          }
-                          onMouseLeave={() =>
-                            toggleHoveringOff(task.task_id, index)
-                          }
-                        >
-                          <span>{task.message}</span>
-                          <MdEdit className="task-edit-pen" />
+                      {(() => {
+                        if (task.hovering === true && task.editing === false) {
+                          return (
+                            <>
+                              <div
+                                className="task"
+                                onMouseEnter={() =>
+                                  toggleHoveringOn(task.task_id, index)
+                                }
+                                onMouseLeave={() =>
+                                  toggleHoveringOff(task.task_id, index)
+                                }
+                              >
+                                <span>{task.message}</span>
+                                <MdEdit
+                                  className="task-edit-pen"
+                                  onClick={() =>
+                                    handleEdit(task.task_id, index)
+                                  }
+                                />
+                              </div>
+                            </>
+                          );
+                        } else if (task.hovering === false) {
+                          return (
+                            <div
+                              className="task"
+                              onMouseEnter={() =>
+                                toggleHoveringOn(task.task_id, index)
+                              }
+                            >
+                              <span>{task.message}</span>
+                            </div>
+                          );
+                        } else if (task.editing === true) {
+                          return (
+                            <>
+                              {task.editingName === true ? (
+                                <>
+                                  <div className="edit-name-input">
+                                    <input
+                                      type="text"
+                                      value={editDefault}
+                                      onChange={() => setEditDefault()}
+                                    />
+                                  </div>
+                                  <div className="edit-popup">
+                                    <span
+                                      onClick={() =>
+                                        editNameHandler(task.task_id, index)
+                                      }
+                                    >
+                                      <FaEdit className="edit-icons" />
+                                      Edit Task Name
+                                    </span>
+                                    <span>
+                                      <MdPerson className="edit-icons" /> Edit
+                                      Members
+                                    </span>
+                                    <span
+                                      onClick={() =>
+                                        handleEditClose(task.task_id, index)
+                                      }
+                                    >
+                                      <MdClose className="edit-icons" />
+                                      Exit Editer
+                                    </span>
+                                  </div>
+                                </>
+                              ) : (
+                                <>
+                                  <div className="task">
+                                    <span>{task.message}</span>
+                                    <MdEdit
+                                      className="task-edit-pen"
+                                      onClick={() =>
+                                        handleEdit(task.task_id, index)
+                                      }
+                                    />
+                                  </div>
+                                  <div className="edit-popup">
+                                    <span
+                                      onClick={() =>
+                                        editNameHandler(task.task_id, index)
+                                      }
+                                    >
+                                      <FaEdit className="edit-icons" />
+                                      Edit Task Name
+                                    </span>
+                                    <span>
+                                      <MdPerson className="edit-icons" /> Edit
+                                      Members
+                                    </span>
+                                    <span
+                                      onClick={() =>
+                                        handleEditClose(task.task_id, index)
+                                      }
+                                    >
+                                      <MdClose className="edit-icons" />
+                                      Exit Editer
+                                    </span>
+                                  </div>
+                                </>
+                              )}
+                            </>
+                          );
+                        }
+                      })()}
+
+                      {/* 
+                      {task.editing ? (
+                        <div className="edit-popup">
+                          <span>
+                            <FaEdit className="edit-icons" /> Edit Task Name
+                          </span>
+                          <span>
+                            <MdPerson className="edit-icons" /> Edit Members
+                          </span>
+                          <span
+                            onClick={() => handleEditClose(task.task_id, index)}
+                          >
+                            <MdClose className="edit-icons" />
+                            Exit Editer
+                          </span>
                         </div>
-                      ) : (
-                        <div
-                          className="task"
-                          onMouseEnter={() =>
-                            toggleHoveringOn(task.task_id, index)
-                          }
-                        >
-                          <span>{task.message}</span>
-                        </div>
-                      )}
+                      ) : null} */}
                     </>
                   ))}
                 </div>
+
                 <div className="status-footer">
                   {status.open ? (
                     <div className="status-footer">

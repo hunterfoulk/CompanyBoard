@@ -12,6 +12,7 @@ const initialState = {
   },
   components: {
     profileDrawer: false,
+    backdrop: false,
   },
   createdBoards: {
     isFetching: true,
@@ -89,22 +90,7 @@ const reducer = (state, action) => {
         ...state,
         currentBoardData: action.currentBoardData,
       };
-    // case "CURRENT_BOARD_STATUSES_UPDATE":
-    //   return {
-    //     ...state,
-    //     currentBoardData: {
-    //       ...currentBoardData,
-    //       statuses: currentBoardData.statuses.map((status, i) =>
-    //         i === index
-    //           ? status.tasks.map((task) =>
-    //               task.id === task_id
-    //                 ? { ...task, hovering: !task.hovering }
-    //                 : task
-    //             )
-    //           : status
-    //       ),
-    //     },
-    //   };
+
     case "RESET_BOARDS":
       return {
         ...state,
