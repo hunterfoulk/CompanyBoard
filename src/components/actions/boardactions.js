@@ -165,18 +165,18 @@ const useBoards = () => {
       .catch((error) => console.error("videos not fetched succesfully", error));
   };
 
-  const updateTask = async (payload, clearForm) => {
+  const updateTaskName = async (payload, clearForm) => {
     console.log("payload", payload);
     console.log("payload board id", payload.board_id);
     let board_id = payload.board_id;
     axios
       .post(
-        `http://localhost:9000/.netlify/functions/server/companyboard/newtask`,
+        `http://localhost:9000/.netlify/functions/server/companyboard/updatetaskname`,
         payload
       )
-      .then((res) => {
-        console.log("new new task", res.data);
-        getCurrentBoardStatuses(board_id);
+      .then(async (res) => {
+        console.log("new task name ", res.data);
+        await getCurrentBoardStatuses(board_id);
       })
       .catch((error) => console.error("videos not fetched succesfully", error));
   };
@@ -188,6 +188,7 @@ const useBoards = () => {
     createNewStatus,
     getCurrentBoardStatuses,
     createNewTask,
+    updateTaskName,
   };
 };
 

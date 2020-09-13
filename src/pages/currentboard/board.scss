@@ -45,7 +45,7 @@
       width: 150px;
       height: 100px;
       // margin-left: 15%;
-      background-color: transparent;
+      // background-color: red;
       // border: none;
       background-color: transparent;
       color: white;
@@ -156,6 +156,24 @@
           // padding: 0px 10px;
           width: 100%;
           margin-bottom: 3px;
+          .save-name-container {
+            display: flex;
+            // background-color: red;
+            margin-bottom: 3px;
+            button {
+              background-color: green;
+              border: 1px solid green;
+              font-size: 18px;
+              color: white;
+              padding: 0px 10px;
+              border-radius: 5px;
+              cursor: pointer;
+            }
+            button:hover {
+              background-color: rgb(4, 114, 4);
+              border: 1px solid rgb(4, 114, 4);
+            }
+          }
           .edit-name-input {
             display: flex;
             min-height: 60px;
@@ -174,6 +192,25 @@
               padding: 3px;
               outline: none;
               font-size: 18px;
+            }
+          }
+          .current {
+            background-color: purple;
+          }
+          .dragging-task {
+            display: flex;
+            min-height: 60px;
+            margin-bottom: 8px;
+            height: fit-content;
+            width: 100%;
+            background-color: rgb(177, 177, 177);
+            border-radius: 5px;
+            cursor: pointer;
+            span {
+              display: none;
+            }
+            .task-edit-pen {
+              display: none;
             }
           }
           .task {
