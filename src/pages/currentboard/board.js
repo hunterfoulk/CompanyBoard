@@ -91,7 +91,7 @@ export default function Board() {
       if (i === index) {
         status.tasks.map((task, i) => {
           if (task.task_id === task_id) {
-            // console.log("tasks", task);
+            console.log("tasks", task);
             task.hovering = true;
           }
         });
@@ -213,16 +213,13 @@ export default function Board() {
     });
   };
 
-  const editNameHandler = (task_id, index) => {
-    console.log(task_id);
-
+  const editNameHandler = (task_id, index, i) => {
     let copy = [...currentBoardData.statuses];
-    console.log(task_id);
     copy.map((status, i) => {
       if (i === index) {
         status.tasks.map((task, i) => {
-          console.log("task id for close", task_id);
-          console.log(task);
+          console.log("EDIT NAME TASK", task);
+
           setEditId(task);
           task.editingName = true;
           setEditDefault(task.message);
@@ -395,38 +392,142 @@ export default function Board() {
                 <div className="tasks-container">
                   {status.tasks.map((task, i) => (
                     <>
-                      <>
-                        <div
-                          draggable="true"
-                          className={
-                            dragging ? getStyles({ index, i }) : "task"
-                          }
-                          onDragEnter={
-                            dragging
-                              ? (e) => {
-                                  handleDragEnter(e, { index, i });
+                      {(() => {
+                        if (task.editing === true) {
+                          return (
+                            <>
+                              {task.editingName === true ? (
+                                <>
+                                  <div className="edit-name-input">
+                                    <form
+                                      onSubmit={(e) =>
+                                        handleEditNameSubmit(
+                                          e,
+                                          task.task_id,
+                                          index
+                                        )
+                                      }
+                                    >
+                                      <input
+                                        type="text"
+                                        value={editDefault}
+                                        onChange={(e) =>
+                                          setEditDefault(e.target.value)
+                                        }
+                                        autoFocus
+                                      />
+                                    </form>
+                                  </div>
+                                  <div className="save-name-container">
+                                    <button
+                                      onClick={(e) =>
+                                        handleEditNameSubmit(
+                                          e,
+                                          task.task_id,
+                                          index
+                                        )
+                                      }
+                                    >
+                                      Save
+                                    </button>
+                                  </div>
+                                  <div className="edit-popup">
+                                    <span
+                                      onClick={() =>
+                                        editNameHandler(task.task_id, index)
+                                      }
+                                    >
+                                      <FaEdit className="edit-icons" />
+                                      Edit Task Name
+                                    </span>
+                                    <span>
+                                      <MdPerson className="edit-icons" /> Edit
+                                      Members
+                                    </span>
+                                    <span
+                                      onClick={() =>
+                                        handleEditClose(task.task_id, index)
+                                      }
+                                    >
+                                      <MdClose className="edit-icons" />
+                                      Exit Editer
+                                    </span>
+                                  </div>
+                                </>
+                              ) : (
+                                <>
+                                  <div draggable="true" className="task">
+                                    <span>{task.message}</span>
+                                    <MdEdit
+                                      className="task-edit-pen"
+                                      onClick={() =>
+                                        handleEdit(task.task_id, index)
+                                      }
+                                    />
+                                  </div>
+                                  <div className="edit-popup">
+                                    <span
+                                      onClick={() =>
+                                        editNameHandler(task.task_id, index)
+                                      }
+                                    >
+                                      <FaEdit className="edit-icons" />
+                                      Edit Task Name
+                                    </span>
+                                    <span>
+                                      <MdPerson className="edit-icons" /> Edit
+                                      Members
+                                    </span>
+                                    <span
+                                      onClick={() =>
+                                        handleEditClose(task.task_id, index)
+                                      }
+                                    >
+                                      <MdClose className="edit-icons" />
+                                      Exit Editer
+                                    </span>
+                                  </div>
+                                </>
+                              )}
+                            </>
+                          );
+                        } else {
+                          return (
+                            <>
+                              <div
+                                draggable
+                                onDragStart={(e) => {
+                                  handleDragStart(e, { index, i });
+                                }}
+                                onDragEnter={
+                                  dragging
+                                    ? (e) => {
+                                        handleDragEnter(e, { index, i });
+                                      }
+                                    : null
                                 }
-                              : null
-                          }
-                          onDragStart={(e) => {
-                            handleDragStart(e, { index, i });
-                          }}
-                          onMouseEnter={() =>
-                            toggleHoveringOn(task.task_id, index)
-                          }
-                          onMouseLeave={() =>
-                            toggleHoveringOff(task.task_id, index)
-                          }
-                        >
-                          <span>{task.message}</span>
-                          {task.hovering ? (
-                            <MdEdit
-                              className="task-edit-pen"
-                              onClick={() => handleEdit(task.task_id, index)}
-                            />
-                          ) : null}
-                        </div>
-                      </>
+                                className="task"
+                                onMouseEnter={() =>
+                                  toggleHoveringOn(task.task_id, index)
+                                }
+                                onMouseLeave={() =>
+                                  toggleHoveringOff(task.task_id, index)
+                                }
+                              >
+                                <span>{task.message}</span>
+                                {task.hovering ? (
+                                  <MdEdit
+                                    className="task-edit-pen"
+                                    onClick={() =>
+                                      handleEdit(task.task_id, index)
+                                    }
+                                  />
+                                ) : null}
+                              </div>
+                            </>
+                          );
+                        }
+                      })()}
                     </>
                   ))}
                 </div>
