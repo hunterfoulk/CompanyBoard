@@ -10,6 +10,7 @@ import { MdClose } from "react-icons/md";
 import { MdEdit } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
 import { MdPerson } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
 import { Modal } from "godspeed";
 
 export default function Board() {
@@ -21,6 +22,8 @@ export default function Board() {
     getCurrentBoardStatuses,
     createNewTask,
     updateTaskName,
+    updateStatusName,
+    deleteTask,
   } = useBoards();
   const [
     {
@@ -38,9 +41,10 @@ export default function Board() {
   const statusName = useInput("");
   const taskName = useInput("");
   const [editDefault, setEditDefault] = useState("");
+  const [dragging, setDragging] = useState(false);
   const dragTask = useRef();
   const dragNode = useRef();
-  const [dragging, setDragging] = useState(false);
+  const [statusNameHolder, setStatusNameHolder] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -69,6 +73,78 @@ export default function Board() {
       });
     };
   }, [fullPath]);
+
+  const handleStatusEditOpen = (status, index) => {
+    let copy = [...currentBoardData.statuses];
+
+    copy[index].editer = true;
+
+    dispatch({
+      type: "CURRENT_BOARD_STATUSES",
+      currentBoardData: {
+        ...currentBoardData,
+        statuses: copy,
+      },
+    });
+  };
+
+  const handleStatusEditClose = (status, index) => {
+    let copy = [...currentBoardData.statuses];
+
+    copy[index].editer = false;
+    copy[index].editingName = false;
+
+    dispatch({
+      type: "CURRENT_BOARD_STATUSES",
+      currentBoardData: {
+        ...currentBoardData,
+        statuses: copy,
+      },
+    });
+  };
+
+  const handleEditStatusName = (status, index) => {
+    console.log("status edit index", index);
+
+    let copy = [...currentBoardData.statuses];
+
+    copy[index].editingName = true;
+    setStatusNameHolder(status.name);
+    dispatch({
+      type: "CURRENT_BOARD_STATUSES",
+      currentBoardData: {
+        ...currentBoardData,
+        statuses: copy,
+      },
+    });
+  };
+
+  const handleEditStatusNameSubmit = async (e, status, index) => {
+    e.preventDefault();
+    let status_id = status.status_id;
+    console.log("Status id submit", status_id);
+
+    const payload = {
+      status_id: status_id,
+      name: statusNameHolder,
+      board_id: board_id,
+    };
+    await updateStatusName(payload);
+
+    let copy = [...currentBoardData.statuses];
+    setStatusNameHolder("");
+
+    copy[index].editingName = false;
+    copy[index].editing = false;
+
+    dispatch({
+      type: "CURRENT_BOARD_STATUSES",
+      currentBoardData: {
+        ...currentBoardData,
+        statuses: copy,
+      },
+    });
+  };
 
   const toggle = (status, index) => {
     setFixed(true);
@@ -271,6 +347,20 @@ export default function Board() {
     });
   };
 
+  const handleDeleteTask = async (task, index, i) => {
+    let task_id = task.task_id;
+
+    const payload = {
+      task_id: task_id,
+      board_id: board_id,
+    };
+    console.log("task getting deleted", task_id);
+
+    dispatch({ type: "DELETE_TASK", statusIdx: index, taskIdx: i });
+
+    deleteTask(payload);
+  };
+
   console.log("drag node", dragNode);
 
   const handleDragStart = (e, params) => {
@@ -314,6 +404,7 @@ export default function Board() {
       taskBeingDragged.index === params.index &&
       dragTask.current.i === params.i
     ) {
+      console.log("HEEELLOOO");
       return "dragging-task";
     } else {
       return "task";
@@ -382,13 +473,74 @@ export default function Board() {
                     : null
                 }
               >
-                <div className="status-header">
-                  <span className="status-name">{status.name}</span>
+                {status.editer ? (
+                  <>
+                    <div className="status-header">
+                      {status.editingName ? (
+                        <form
+                          onSubmit={(e) =>
+                            handleEditStatusNameSubmit(e, status, index)
+                          }
+                        >
+                          <input
+                            autoFocus
+                            type="text"
+                            value={statusNameHolder}
+                            onChange={(e) =>
+                              setStatusNameHolder(e.target.value)
+                            }
+                          />
+                          <button type="submit" className="status-edit-button">
+                            Save
+                          </button>
+                          <button
+                            onClick={() => handleStatusEditClose(status, index)}
+                            className="status-close-button"
+                          >
+                            Exit
+                          </button>
+                        </form>
+                      ) : (
+                        <>
+                          <span className="status-name">{status.name}</span>
+                          <div className="status-header-icons">
+                            <MdEdit
+                              onClick={() => {
+                                handleEditStatusName(status, index);
+                              }}
+                              className="edit-icons"
+                              style={{ marginRight: "3px", cursor: "pointer" }}
+                            />
+                            <MdDelete
+                              className="edit-icons"
+                              style={{ marginRight: "2px", cursor: "pointer" }}
+                            />
+                            <span className="status-dots">
+                              <FiMoreHorizontal
+                                onClick={() =>
+                                  handleStatusEditClose(status, index)
+                                }
+                              />
+                            </span>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="status-header">
+                      <span className="status-name">{status.name}</span>
 
-                  <span className="status-dots">
-                    <FiMoreHorizontal />
-                  </span>
-                </div>
+                      <span className="status-dots">
+                        <FiMoreHorizontal
+                          onClick={() => handleStatusEditOpen(status, index)}
+                        />
+                      </span>
+                    </div>
+                  </>
+                )}
+
                 <div className="tasks-container">
                   {status.tasks.map((task, i) => (
                     <>
@@ -434,18 +586,6 @@ export default function Board() {
                                   <div className="edit-popup">
                                     <span
                                       onClick={() =>
-                                        editNameHandler(task.task_id, index)
-                                      }
-                                    >
-                                      <FaEdit className="edit-icons" />
-                                      Edit Task Name
-                                    </span>
-                                    <span>
-                                      <MdPerson className="edit-icons" /> Edit
-                                      Members
-                                    </span>
-                                    <span
-                                      onClick={() =>
                                         handleEditClose(task.task_id, index)
                                       }
                                     >
@@ -456,7 +596,14 @@ export default function Board() {
                                 </>
                               ) : (
                                 <>
-                                  <div draggable="true" className="task">
+                                  <div
+                                    draggable
+                                    className={
+                                      dragging
+                                        ? getStyles({ index, i })
+                                        : "task"
+                                    }
+                                  >
                                     <span>{task.message}</span>
                                     <MdEdit
                                       className="task-edit-pen"
@@ -477,6 +624,14 @@ export default function Board() {
                                     <span>
                                       <MdPerson className="edit-icons" /> Edit
                                       Members
+                                    </span>
+                                    <span
+                                      onClick={() => {
+                                        handleDeleteTask(task, index, i);
+                                      }}
+                                    >
+                                      <MdDelete className="edit-icons" />
+                                      Delete Task
                                     </span>
                                     <span
                                       onClick={() =>
@@ -506,7 +661,9 @@ export default function Board() {
                                       }
                                     : null
                                 }
-                                className="task"
+                                className={
+                                  dragging ? getStyles({ index, i }) : "task"
+                                }
                                 onMouseEnter={() =>
                                   toggleHoveringOn(task.task_id, index)
                                 }

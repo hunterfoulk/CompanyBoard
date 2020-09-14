@@ -87,6 +87,8 @@ const useBoards = () => {
         let response = res.data;
         response.forEach((response) => {
           response.open = false;
+          response.editer = false;
+          response.editingName = false;
         });
         await attachTasks(response);
       })
@@ -181,6 +183,38 @@ const useBoards = () => {
       .catch((error) => console.error("videos not fetched succesfully", error));
   };
 
+  const updateStatusName = async (payload, clearForm) => {
+    console.log("payload", payload);
+    console.log("payload board id", payload.board_id);
+    let board_id = payload.board_id;
+    axios
+      .post(
+        `http://localhost:9000/.netlify/functions/server/companyboard/updatestatusname`,
+        payload
+      )
+      .then(async (res) => {
+        console.log("new status name ", res.data);
+        await getCurrentBoardStatuses(board_id);
+      })
+      .catch((error) => console.error("videos not fetched succesfully", error));
+  };
+
+  const deleteTask = async (payload, clearForm) => {
+    console.log("payload", payload);
+    console.log("payload board id", payload.board_id);
+    let board_id = payload.board_id;
+    axios
+      .post(
+        `http://localhost:9000/.netlify/functions/server/companyboard/deletetask`,
+        payload
+      )
+      .then(async (res) => {
+        console.log("task deleted succesfully ", res.data);
+        await getCurrentBoardStatuses(board_id);
+      })
+      .catch((error) => console.error("videos not fetched succesfully", error));
+  };
+
   return {
     getMyBoards,
     getJoinedBoards,
@@ -189,6 +223,8 @@ const useBoards = () => {
     getCurrentBoardStatuses,
     createNewTask,
     updateTaskName,
+    updateStatusName,
+    deleteTask,
   };
 };
 

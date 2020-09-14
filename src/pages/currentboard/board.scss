@@ -43,7 +43,7 @@
       position: relative;
       margin-bottom: 5px;
       width: 150px;
-      height: 100px;
+      // height: 100px;
       // margin-left: 15%;
       // background-color: red;
       // border: none;
@@ -60,6 +60,7 @@
         padding: 5px;
         .edit-icons {
           margin-right: 5px;
+          cursor: pointer;
         }
       }
       span:hover {
@@ -149,6 +150,35 @@
         background-color: rgb(235, 235, 235);
         margin-right: 20px;
         border-radius: 3px;
+        .status-edit-popup {
+          display: flex;
+          flex-direction: column;
+          z-index: 500;
+          position: relative;
+          margin-bottom: 5px;
+          width: 150px;
+          height: 100px;
+          background-color: transparent;
+          color: white;
+
+          span {
+            display: flex;
+            border-radius: 5px;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.596);
+            border: 1px solid rgba(0, 0, 0, 0.596);
+            margin-bottom: 5px;
+            padding: 5px;
+            .edit-icons {
+              margin-right: 5px;
+            }
+          }
+          span:hover {
+            cursor: pointer;
+            background-color: rgba(0, 0, 0, 0.486);
+            border: 1px solid rgba(0, 0, 0, 0.486);
+          }
+        }
         .tasks-container {
           display: flex;
           flex-direction: column;
@@ -245,6 +275,7 @@
             background-color: rgb(219, 219, 219);
           }
         }
+
         .status-header {
           display: flex;
           color: rgba(7, 7, 7, 0.719);
@@ -253,6 +284,36 @@
           font-size: 20px;
           padding: 5px 8px;
           margin-bottom: 3px;
+          // background-color: red;
+          form {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            // background-color: Red;
+            input {
+              outline: none;
+              background-color: transparent;
+              border: none;
+              font-size: 16px;
+              border-bottom: 1px solid grey;
+              // background-color: green;
+            }
+            .status-edit-button {
+              background-color: green;
+              border: 1px solid green;
+              border-radius: 5px;
+              color: white;
+              cursor: pointer;
+              margin-right: 2px;
+            }
+            .status-close-button {
+              background-color: rgba(0, 0, 0, 0.596);
+              border: 1px solid rgba(0, 0, 0, 0.596);
+              color: white;
+              border-radius: 5px;
+              cursor: pointer;
+            }
+          }
           .status-name {
           }
           .status-dots {

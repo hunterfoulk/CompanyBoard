@@ -90,7 +90,20 @@ const reducer = (state, action) => {
         ...state,
         currentBoardData: action.currentBoardData,
       };
-
+    case "DELETE_TASK":
+      return {
+        ...state,
+        currentBoardData: {
+          statuses: state.currentBoardData.statuses.map((status, idx) =>
+            idx === action.statusIdx
+              ? {
+                  ...status,
+                  tasks: status.tasks.filter((task, i) => i !== action.taskIdx),
+                }
+              : status
+          ),
+        },
+      };
     case "RESET_BOARDS":
       return {
         ...state,
@@ -104,6 +117,7 @@ const reducer = (state, action) => {
           statuses: [],
         },
       };
+
     default:
       return state;
   }
