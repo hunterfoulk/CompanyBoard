@@ -26,11 +26,20 @@ const initialState = {
   currentBoardUsers: {
     isFetching: true,
     board: {},
-    statuses: [],
   },
   currentBoardData: {
     isFetching: true,
     statuses: [],
+  },
+  background: {
+    color: "#FFFFFF",
+  },
+  currentTaskData: {
+    task: {},
+  },
+  searchResults: {
+    results: [],
+    isFetching: true,
   },
 };
 
@@ -90,6 +99,11 @@ const reducer = (state, action) => {
         ...state,
         currentBoardData: action.currentBoardData,
       };
+    case "CURRENT_TASK":
+      return {
+        ...state,
+        currentTaskData: action.currentTaskData,
+      };
     case "DELETE_TASK":
       return {
         ...state,
@@ -103,6 +117,18 @@ const reducer = (state, action) => {
               : status
           ),
         },
+      };
+
+    case "CHANGE_BACKGROUND":
+      return {
+        ...state,
+        background: action.background,
+      };
+
+    case "SEARCH_RESULTS":
+      return {
+        ...state,
+        searchResults: action.searchResults,
       };
     case "RESET_BOARDS":
       return {

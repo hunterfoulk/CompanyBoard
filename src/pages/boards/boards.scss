@@ -9,7 +9,7 @@
 
   .boards-container {
     display: flex;
-    width: 50%;
+    width: 80%;
     margin-top: 25px;
     // justify-content: center;
     flex-direction: column;
@@ -31,7 +31,8 @@
         }
         h3 {
           margin-left: 5px;
-          font-family: "Assistant", sans-serif;
+          color: #4d4d4d;
+          font-family: jaf-facitweb, Helvetica Neue, Arial, sans-serif;
         }
       }
       .boards-container {
@@ -42,16 +43,38 @@
         flex-direction: row;
       }
     }
+    .create-board-card {
+      display: flex;
+      padding: 8px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-color: rgb(221, 221, 221);
+      width: 240px;
+      max-width: 240px;
+      height: 105px;
+      border-radius: 5px;
+      margin-right: 20px;
+      cursor: pointer;
+      span {
+        font-size: 18px;
+        color: rgb(158, 158, 158);
+      }
+    }
+    .create-board-card:hover {
+      box-shadow: rgba(0, 0, 0, 0.145) 0 0 6px;
+    }
     .board-card {
       display: flex;
       padding: 8px;
       flex-direction: column;
       background-color: rgb(85, 147, 219);
-      width: 260px;
-      max-width: 260px;
-      height: 110px;
+      width: 240px;
+      max-width: 240px;
+      height: 105px;
       border-radius: 5px;
       margin-right: 20px;
+      margin-bottom: 8px;
       cursor: pointer;
 
       .board-name {
@@ -104,7 +127,8 @@
         }
         h3 {
           margin-left: 5px;
-          font-family: "Assistant", sans-serif;
+          color: #4d4d4d;
+          font-family: jaf-facitweb, Helvetica Neue, Arial, sans-serif;
         }
       }
     }

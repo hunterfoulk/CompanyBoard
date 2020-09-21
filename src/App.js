@@ -9,6 +9,7 @@ import Boards from "./pages/boards/boards";
 import CreateBoard from "./components/createboard/createboard";
 import { useStateValue } from "./state";
 import Board from "./pages/currentboard/board";
+import Searchresults from "./pages/searchresults/searchresults";
 
 const App = () => {
   const [
@@ -88,6 +89,17 @@ const App = () => {
               <>
                 <Navbar />
                 <Board />
+              </>
+            )}
+          ></Route>
+
+          <Route
+            exact
+            path="/searchresults/:searchterm"
+            render={() => (
+              <>
+                <Navbar />
+                <Searchresults />
               </>
             )}
           ></Route>

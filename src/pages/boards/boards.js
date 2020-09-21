@@ -6,6 +6,7 @@ import "react-tippy/dist/tippy.css";
 import { Tooltip } from "react-tippy";
 import { MdDeveloperBoard } from "react-icons/md";
 import { Link, useHistory } from "react-router-dom";
+import NoBoards from "./noboards";
 
 export default function Boards() {
   const [
@@ -22,6 +23,10 @@ export default function Boards() {
     getJoinedBoards(user_id);
   }, []);
 
+  // if (joinedBoards.boards.length === 0 && createdBoards.boards.length === 0) {
+  //   return <NoBoards />;
+  // }
+
   return (
     <div className="boards-main">
       <div className="boards-container">
@@ -29,6 +34,7 @@ export default function Boards() {
           <div className="created-boards-header">
             <MdDeveloperBoard className="board-icon" /> <h3>Created Boards</h3>
           </div>
+
           <div className="boards-container">
             {createdBoards.boards.map((board) => {
               return (
@@ -42,27 +48,40 @@ export default function Boards() {
                     <span className="board-name">{board.board_name}</span>
                     <p className="board-description">{board.description}</p>
                     <div className="board-users">
-                      <Tooltip
-                        title={board.username}
-                        trigger="mouseenter"
-                        className="tooltip"
-                        position="bottom"
-                        size="small"
-                        style={{ padding: "0px" }}
-                      >
-                        <img src={board.profilepic} />
-                      </Tooltip>
+                      {board.users.map((user) => (
+                        <Tooltip
+                          title={user.username}
+                          trigger="mouseenter"
+                          className="tooltip"
+                          position="bottom"
+                          size="small"
+                          style={{ padding: "0px" }}
+                        >
+                          <img src={user.profilepic} />
+                        </Tooltip>
+                      ))}
                     </div>
                   </div>
                 </>
               );
             })}
+            <div className="create-board-card">
+              <span>Create new board...</span>
+            </div>
           </div>
         </div>
         <div className="joined-boards-container">
           <div className="joined-boards-header">
             <MdDeveloperBoard className="board-icon" /> <h3>Joined Boards</h3>
           </div>
+          {joinedBoards.boards.length === 0 &&
+          createdBoards.boards.length === 0 ? (
+            <div>
+              <span style={{ fontSize: "20px" }}>
+                You currently arent in any boards.
+              </span>
+            </div>
+          ) : null}
           <div className="boards-container">
             {joinedBoards.boards.map((board) => {
               return (
@@ -76,16 +95,18 @@ export default function Boards() {
                     <span className="board-name">{board.board_name}</span>
                     <p className="board-description">{board.description}</p>
                     <div className="board-users">
-                      <Tooltip
-                        title={board.username}
-                        trigger="mouseenter"
-                        className="tooltip"
-                        position="bottom"
-                        size="small"
-                        style={{ padding: "0px" }}
-                      >
-                        <img src={board.profilepic} />
-                      </Tooltip>
+                      {board.users.map((user) => (
+                        <Tooltip
+                          title={user.username}
+                          trigger="mouseenter"
+                          className="tooltip"
+                          position="bottom"
+                          size="small"
+                          style={{ padding: "0px" }}
+                        >
+                          <img src={user.profilepic} />
+                        </Tooltip>
+                      ))}
                     </div>
                   </div>
                 </>

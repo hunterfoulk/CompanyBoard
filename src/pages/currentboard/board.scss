@@ -3,19 +3,469 @@
   flex-direction: column;
   // background-color: #b528b962;
   overflow: hidden;
-
   width: 100%;
   height: calc(100vh - 48px);
+  .edit-task-modal {
+    width: 700px;
+    min-height: 300px;
+    height: fit-content;
+    left: 50%;
+    top: 20%;
+    padding: 10px 20px;
+    position: absolute;
+    border: none;
+    background-color: rgb(248, 248, 248);
+    transform: translate(-50%) !important;
+    .task-edit-header {
+      display: flex;
+      justify-content: flex-end;
+      width: 100%;
+      font-size: 25px;
+      margin-bottom: 10px;
+      .task-modal-close {
+        margin-right: 5px;
+        font-size: 20px;
+        cursor: pointer;
+      }
+    }
+    .task-modal-content-container {
+      display: flex;
+      flex-direction: row;
+      .task-modal-left {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        // background-color: purple;
+        // padding-left: 20px;
+        width: 80%;
+        .med-label {
+          width: 100px;
+          height: 8px;
+          background-color: rgb(235, 235, 44);
+          border: 1px solid rgb(235, 235, 44);
+          border-radius: 20px;
+          margin-left: 18px;
+          margin-bottom: 2px;
+        }
+        .low-label {
+          width: 100px;
+          height: 8px;
+          background-color: rgb(47, 143, 44);
+          border: 1px solid rgb(47, 143, 44);
+          border-radius: 20px;
+          margin-left: 18px;
+          margin-bottom: 2px;
+        }
+        .high-label {
+          width: 100px;
+          height: 8px;
+          background-color: rgb(228, 59, 59);
+          border: 1px solid rgb(228, 59, 59);
+          border-radius: 20px;
+          margin-left: 18px;
+          margin-bottom: 2px;
+        }
+        .current-task-workers-container {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          margin-top: 45px;
+          span {
+          }
+        }
+        .task-modal-task-name {
+          display: flex;
+          align-items: center;
+          // background-color: green;
+          .modal-task-name {
+            display: flex;
+            font-size: 20px;
+            padding: 0px;
+            font-size: 25px;
 
+            margin: 0px;
+          }
+          .modal-task-edit-name {
+            color: grey;
+            text-decoration: underline;
+            cursor: pointer;
+            margin-top: 2px;
+            margin-left: 2px;
+          }
+        }
+        form {
+          margin-top: 5px;
+          display: flex;
+          // background-color: yellow;
+          flex-direction: column;
+          width: 40%;
+          textarea {
+            outline: none;
+            min-height: 50px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            font-size: 16px;
+          }
+          button {
+            background-color: green;
+            border: 1px solid green;
+            // border-radius: 3px;
+            color: white;
+            margin-left: 3px;
+            cursor: pointer;
+            width: 30%;
+          }
+          .modal-edit-name-close {
+            background-color: grey;
+            border: 1px solid grey;
+            outline: none;
+          }
+        }
+        .modal-comment-container {
+          display: flex;
+          flex-direction: column;
+          // background-color: yellow;
+          width: 100%;
+          // align-items: center;
+          margin-top: 30px;
+          .comment-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            span {
+              font-size: 22px;
+              font-weight: 600;
+            }
+          }
+          .comment-input-main {
+            display: flex;
+            flex-direction: row;
+            .comment-auth-pic-container {
+              display: flex;
+              width: 10%;
+              // background-color: yellow;
+              img {
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+              }
+            }
+            .comment-input-container {
+              display: flex;
+              flex-direction: column;
+              width: 90%;
+              input {
+                text-align: start;
+                padding-top: 5px;
+                padding-bottom: 30px;
+                width: 90%;
+                // height: 60px;
+                box-shadow: 0 0 3px rgb(168, 168, 168);
+                outline: none;
+                border: none;
+              }
+              button {
+                margin-top: 10px;
+                padding: 8px 10px;
+                width: 90px;
+                background-color: green;
+                border: 1px solid green;
+                color: white;
+                font-weight: 600;
+                border-radius: 3px;
+                outline: none;
+                cursor: pointer;
+              }
+              button:hover {
+                background-color: rgb(5, 110, 5);
+                border: 1px solid rgb(5, 110, 5);
+              }
+            }
+          }
+        }
+      }
+      .task-modal-right {
+        display: flex;
+        flex-direction: column;
+        // background-color: red;
+        width: 20%;
+        .due-date-input {
+          display: flex;
+          align-items: flex-end;
+          flex-direction: column;
+          width: 100%;
+          // height: 70px;
+          // background-color: red;
+          input {
+            // background-color: green;
+            width: 95%;
+            outline: none;
+          }
+          button {
+            justify-content: center;
+            width: 60px;
+            padding: 0px;
+            margin-top: 5px;
+            background-color: green;
+            border: 1px solid green;
+            color: white;
+          }
+          button:hover {
+            background-color: rgb(11, 100, 11);
+            border: 1px solid rgb(11, 100, 11);
+          }
+        }
+        .prio-buttons-container {
+          display: flex;
+          flex-direction: column;
+          // background-color: green;
+          .low-prio-button {
+            display: flex;
+            justify-content: center;
+            background-color: rgb(10, 114, 10);
+            border: 1px solid rgb(10, 114, 10);
+            font-size: 11px;
+            width: 70%;
+            padding: 5px 0px;
+            color: white;
+            text-align: center;
+          }
+          .low-prio-button:hover {
+            background-color: rgb(13, 102, 13);
+            border: 1px solid rgb(13, 102, 13);
+          }
+
+          .med-prio-button {
+            display: flex;
+            background-color: rgb(218, 218, 69);
+            border: 1px solid rgb(218, 218, 69);
+            font-size: 11px;
+            width: 70%;
+            padding: 5px 0px;
+            color: white;
+            justify-content: center;
+            font-weight: bold;
+          }
+          .med-prio-button:hover {
+            background-color: rgb(197, 197, 62);
+            border: 1px solid rgb(197, 197, 62);
+          }
+          .high-prio-button {
+            display: flex;
+            justify-content: center;
+            background-color: rgb(173, 58, 58);
+            border: 1px solid rgb(173, 58, 58);
+            font-weight: bold;
+            font-size: 11px;
+            width: 70%;
+            padding: 5px 0px;
+            color: white;
+            text-align: center;
+          }
+          .high-prio-button:hover {
+            background-color: rgb(155, 52, 52);
+            border: 1px solid rgb(155, 52, 52);
+          }
+        }
+        span {
+          font-size: 25px;
+          margin-bottom: 5px;
+        }
+        button {
+          display: flex;
+          align-items: center;
+          cursor: pointer;
+          padding: 10px 0px;
+          outline: none;
+          border: none;
+          font-weight: bold;
+          background-color: rgb(230, 230, 230);
+          border-radius: 3px;
+          margin-bottom: 10px;
+        }
+        button:hover {
+          background-color: rgb(204, 204, 204);
+        }
+      }
+    }
+  }
+  .edit-modal {
+    width: 250px;
+    // height: 120px;
+    left: 50%;
+    top: 20%;
+    padding: 10px 10px;
+    position: absolute;
+    border: none;
+    background-color: white;
+    transform: translate(-50%) !important;
+    .delete-status-container {
+      display: flex;
+      width: 100%;
+      justify-content: flex-end;
+      button {
+        background-color: grey;
+        border: 1px solid grey;
+        cursor: pointer;
+        border-radius: 3px;
+        color: white;
+        outline: none;
+      }
+    }
+    .edit-modal-header {
+      color: rgb(124, 124, 124);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgb(180, 180, 180);
+      .modal-close-button {
+        position: relative;
+        left: 70px;
+        cursor: pointer;
+      }
+    }
+    form {
+      label {
+        font-size: 18px;
+        font-weight: 600;
+        color: rgb(54, 54, 54);
+      }
+      margin-top: 5px;
+      display: flex;
+      flex-direction: column;
+      input {
+        height: 25px;
+        font-size: 14px;
+      }
+      button {
+        width: 80px;
+        padding: 3px 0px;
+        background-color: green;
+        border: 1px solid green;
+        border-radius: 5px;
+        color: white;
+        margin-top: 5px;
+        cursor: pointer;
+        outline: none;
+      }
+    }
+  }
+  .menu-drawer {
+    display: flex;
+    flex-direction: column;
+    min-width: 15%;
+    padding: 5px 5px;
+    background-color: rgb(241, 241, 241);
+    .menu-description {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px 10px;
+      .menu-description-header {
+        font-size: 18px;
+        display: flex;
+        width: 100%;
+        // background-color: green;
+        .description-icon {
+          color: rgb(77, 77, 77);
+          margin-right: 8px;
+          margin-left: 5px;
+        }
+      }
+      .description-edit-container {
+        width: 100%;
+        // background-color: green;
+        .description-edit-button {
+          margin-left: 30px;
+          color: rgb(124, 124, 124);
+          text-decoration: underline;
+          cursor: pointer;
+        }
+      }
+      p {
+        font-size: 18px;
+      }
+    }
+    .menu-actions-container {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      padding: 10px 10px;
+      margin-top: 5px;
+      .bg-container {
+        display: flex;
+        flex-direction: row;
+        span {
+          font-size: 18px;
+        }
+        .bg-color {
+          width: 20px;
+          height: 20px;
+          border: 1px solid black;
+          background-color: red;
+          margin-right: 8px;
+          cursor: pointer;
+          border-radius: 2px;
+        }
+      }
+    }
+    .menu-drawer-header {
+      display: flex;
+      font-size: 20px;
+      height: 30px;
+      width: 100%;
+      justify-content: center;
+      padding: 15px 5px;
+      border-bottom: 1px solid rgb(207, 207, 207);
+    }
+    .menu-members-list {
+      display: flex;
+      flex-direction: column;
+      padding: 10px 5px;
+      border-bottom: 1px solid rgb(207, 207, 207);
+      .menu-owner-container {
+        display: flex;
+        // background-color: red;
+        flex-direction: column;
+        margin-bottom: 10px;
+      }
+      .menu-members-container {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 5px;
+      }
+      img {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        margin-top: 5px;
+      }
+      span {
+        font-size: 18px;
+        color: rgb(110, 110, 110);
+      }
+    }
+  }
   .board-header {
     display: flex;
+
     padding: 10px 10px;
     background-color: #88bbe485;
     .board-header-left {
       display: flex;
+      align-items: center;
+      // background-color: green;
       width: 50%;
+      img {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        margin: 0px 10px;
+      }
       .board-name {
-        font-size: 20px;
+        font-size: 25px;
+        margin-left: 5px;
       }
     }
     .board-header-right {
@@ -23,11 +473,11 @@
       justify-content: flex-end;
       align-items: center;
       width: 50%;
-      img {
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        margin: 0px 10px;
+      .menu-span {
+        margin-right: 5px;
+        text-decoration: underline;
+        cursor: pointer;
+        color: white;
       }
     }
   }
@@ -43,13 +493,8 @@
       position: relative;
       margin-bottom: 5px;
       width: 150px;
-      // height: 100px;
-      // margin-left: 15%;
-      // background-color: red;
-      // border: none;
       background-color: transparent;
       color: white;
-
       span {
         display: flex;
         border-radius: 5px;
@@ -136,6 +581,7 @@
       display: flex;
       width: 100%;
       //   background-color: rgb(108, 155, 108);
+      flex-wrap: wrap;
       .status-container {
         display: flex;
         // align-items: stretch;
@@ -147,8 +593,8 @@
         height: fit-content;
         min-width: 280px;
         padding: 5px 8px;
-        background-color: rgb(235, 235, 235);
-        margin-right: 20px;
+        background-color: rgb(238, 238, 238);
+        margin-right: 10px;
         border-radius: 3px;
         .status-edit-popup {
           display: flex;
@@ -242,26 +688,62 @@
             .task-edit-pen {
               display: none;
             }
+            .task-drag-icon {
+              display: none;
+            }
           }
           .task {
             display: flex;
+            flex-direction: column;
             min-height: 60px;
             margin-bottom: 8px;
             height: fit-content;
             width: 100%;
             background-color: white;
             border-radius: 5px;
+            padding-top: 5px;
             cursor: pointer;
-
+            .task-name-container {
+              display: flex;
+              justify-content: space-between;
+            }
+            .task-low-label {
+              position: relative;
+              width: 55px;
+              margin-left: 2px;
+              height: 8px;
+              border-radius: 50px;
+              background-color: green;
+            }
+            .task-med-label {
+              position: relative;
+              width: 55px;
+              margin-left: 2px;
+              height: 8px;
+              border-radius: 50px;
+              background-color: rgb(247, 247, 35);
+            }
+            .task-high-label {
+              position: relative;
+              width: 55px;
+              margin-left: 2px;
+              height: 8px;
+              border-radius: 50px;
+              background-color: red;
+            }
+            .task-drag-icon {
+              position: relative;
+              right: 5px;
+              color: rgb(116, 116, 116);
+            }
             .task-edit-pen {
               position: relative;
-              // left: 10px;
-              right: 10px;
-              top: 5px;
+              right: 8px;
+              color: rgb(114, 114, 114);
             }
             .task-edit-pen:hover {
               border-radius: 50%;
-              background-color: rgb(192, 192, 192);
+              background-color: rgb(196, 196, 196);
             }
             span {
               font-size: 20px;
@@ -278,13 +760,14 @@
 
         .status-header {
           display: flex;
-          color: rgba(7, 7, 7, 0.719);
+          color: #4d4d4d;
           font-weight: 600;
           justify-content: space-between;
-          font-size: 20px;
+          font-size: 18px;
           padding: 5px 8px;
           margin-bottom: 3px;
           // background-color: red;
+          font-family: jaf-facitweb, Helvetica Neue, Arial, sans-serif;
           form {
             display: flex;
             justify-content: space-between;
@@ -333,7 +816,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-top: 20px;
+            // margin-top: 5px;
             width: 100%;
             height: 100px;
             padding: 0px 2px;
@@ -343,6 +826,7 @@
               flex-direction: column;
               height: 100%;
               width: 100%;
+
               textarea {
                 width: 100%;
                 resize: none;
@@ -358,9 +842,10 @@
               display: flex;
               // justify-content: center;
               width: 100%;
-              margin-top: 5px;
+              margin-top: 10px;
               // justify-content: center
               // background-color: Red;
+
               .add-button {
                 background-color: green;
                 border: none;
