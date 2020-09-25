@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import axios from "axios";
 import "./board.scss";
 import useBoards from "../../components/actions/boardactions";
 import { useStateValue } from "../../state";
@@ -18,9 +19,13 @@ import { MdLabelOutline } from "react-icons/md";
 import { MdPeopleOutline } from "react-icons/md";
 import { FaRegComment } from "react-icons/fa";
 import { FaRegWindowMaximize } from "react-icons/fa";
+import { IoMdSettings } from "react-icons/io";
 import { FiClock } from "react-icons/fi";
 import { Drawer } from "godspeed";
 import { Modal } from "godspeed";
+import "react-tippy/dist/tippy.css";
+import { Tooltip } from "react-tippy";
+import Draggable from "react-draggable";
 
 export default function Board() {
   const {
@@ -36,6 +41,7 @@ export default function Board() {
     updateDueDate,
     currentTask,
     updateLabel,
+    updateTaskMembers,
   } = useBoards();
   const [
     {
@@ -46,6 +52,14 @@ export default function Board() {
       currentBoardUsers,
       currentBoardData,
       currentTaskData,
+      popupMembers,
+      taskMembers,
+      checkBoxes,
+      membersBox,
+      labelsBox,
+      dates,
+      members,
+      labels,
     },
     dispatch,
   ] = useStateValue();
@@ -67,7 +81,12 @@ export default function Board() {
   const [labelClicked, setLabelClicked] = useState(false);
   const [dueDateClicked, setDueDateClicked] = useState(false);
   const [dueDate, setDueDate] = useState("");
-  const [editTaskState, setEditTaskState] = useState({});
+  const [membersPopup, setMembersPopup] = useState(false);
+  const [tab, setTab] = useState("");
+  const [popupOriginalArray, setPopupOriginalArray] = useState([]);
+  const [popupFilterArray, setPopupFilterArray] = useState([]);
+  const [settingsPopup, setSettingsPopup] = useState(false);
+  const [draggingWindow, setDraggingWindow] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -176,47 +195,6 @@ export default function Board() {
     });
   };
 
-  const toggleHoveringOn = (task_id, index) => {
-    let copy = [...currentBoardData.statuses];
-    copy.map((status, i) => {
-      if (i === index) {
-        status.tasks.map((task, i) => {
-          if (task.task_id === task_id) {
-            console.log("tasks", task);
-            task.hovering = true;
-          }
-        });
-      }
-    });
-    dispatch({
-      type: "CURRENT_BOARD_STATUSES",
-      currentBoardData: {
-        ...currentBoardData,
-        statuses: copy,
-      },
-    });
-  };
-
-  const toggleHoveringOff = (task_id, index) => {
-    let copy = [...currentBoardData.statuses];
-    copy.map((status, i) => {
-      if (i === index) {
-        status.tasks.map((task, i) => {
-          if (task.task_id === task_id) {
-            task.hovering = false;
-          }
-        });
-      }
-    });
-    dispatch({
-      type: "CURRENT_BOARD_STATUSES",
-      currentBoardData: {
-        ...currentBoardData,
-        statuses: copy,
-      },
-    });
-  };
-
   const closeToggle = (status_id, index) => {
     console.log("status id for close", status_id);
 
@@ -233,89 +211,28 @@ export default function Board() {
     });
   };
 
-  const HandleNewTask = (status_id) => {
+  const HandleNewTask = async (status_id) => {
     console.log("status id clicked", status_id);
-    let user_id = auth.user.user_id;
 
     let payload = {
-      user_id: user_id,
       status_id: status_id,
       message: taskName.value,
       board_id: board_id,
     };
 
-    let clearForm = () => {
-      taskName.setValue("");
-    };
-    taskName.setValue("");
-    if (taskName.value.length > 0) {
-      createNewTask(payload, clearForm);
-    } else {
-      return;
-    }
+    await createNewTask(payload);
   };
 
-  const [editId, setEditId] = useState({});
-
-  const handleEdit = (task_id, index) => {
-    let copy = [...currentBoardData.statuses];
-
-    copy.map((status, i) => {
-      if (i === index) {
-        status.tasks.map((task, i) => {
-          if (task.task_id === task_id) {
-            console.log("this is task", task);
-            setEditId(task);
-
-            task.editing = true;
-          }
-        });
-      }
-    });
-    console.log("edit id", editId);
-
-    dispatch({
-      type: "CURRENT_BOARD_STATUSES",
-      currentBoardData: {
-        ...currentBoardData,
-        statuses: copy,
-      },
-    });
-  };
-
-  const handleEditNameSubmit = async (e, task_id, index) => {
+  const handleEditNameSubmit = async (e) => {
     e.preventDefault();
-    console.log("name", editDefault);
-    console.log("task_id", editId.task_id);
-    console.log("this is the task_id", task_id);
+    let task_id = currentTaskData.task.task_id;
 
     const payload = {
-      task_id: editId.task_id,
+      task_id: task_id,
       message: editDefault,
       board_id: board_id,
     };
     await updateTaskName(payload);
-
-    let copy = [...currentBoardData.statuses];
-    console.log(task_id);
-    copy.map((status, i) => {
-      if (i === index) {
-        status.tasks.map((task, i) => {
-          task.editingName = false;
-          task.hovering = false;
-          task.editing = false;
-          setEditDefault("");
-        });
-      }
-    });
-
-    dispatch({
-      type: "CURRENT_BOARD_STATUSES",
-      currentBoardData: {
-        ...currentBoardData,
-        statuses: copy,
-      },
-    });
   };
 
   console.log("drag node", dragNode);
@@ -361,7 +278,6 @@ export default function Board() {
       taskBeingDragged.index === params.index &&
       dragTask.current.i === params.i
     ) {
-      console.log("HEEELLOOO");
       return "dragging-task";
     } else {
       return "task";
@@ -371,14 +287,15 @@ export default function Board() {
   if (dragging) {
     console.log("i am dragging");
   }
-  const modalDate = new Date(
-    currentTaskData.task.task_date
-  ).toLocaleDateString();
 
-  const closeTaskModal = () => {
+  const closeTaskModal = async () => {
     setDueDateClicked(false);
     setLabelClicked(false);
     setTaskEditModal(false);
+    setMembersPopup(false);
+    setPopupFilterArray(popupOriginalArray);
+
+    setTab("");
   };
 
   const currentTaskHandler = async (task_id) => {
@@ -388,8 +305,9 @@ export default function Board() {
     setTaskEditModal(true);
   };
 
-  const dueDateHandler = () => {
-    let task_id = editTaskState.task_id;
+  const dueDateHandler = async (e) => {
+    e.preventDefault();
+    let task_id = currentTaskData.task.task_id;
 
     let payload = {
       task_id: task_id,
@@ -397,7 +315,7 @@ export default function Board() {
       dueDate: dueDate,
     };
 
-    updateDueDate(payload);
+    await updateDueDate(payload);
   };
 
   const updateLabelHandler = async (label) => {
@@ -406,6 +324,7 @@ export default function Board() {
     let payload = {
       task_id: currentTaskData.task.task_id,
       label: label,
+      board_id: board_id,
     };
 
     await updateLabel(payload);
@@ -425,23 +344,172 @@ export default function Board() {
   };
 
   const taskLabelStyles = (task) => {
-    if (task.label === "low") {
+    if (task.label === "low" && labels.checked == true) {
       return "task-low-label";
-    } else if (task.label === "med") {
+    } else if (task.label === "med" && labels.checked == true) {
       return "task-med-label";
-    } else if (task.label === "high") {
+    } else if (task.label === "high" && labels.checked == true) {
       return "task-high-label";
     } else if (task.label === null) {
       return;
     }
   };
 
-  // let users = Object.values(currentBoardUsers.board);
-  // console.log("users", users);
+  const activeTabStyle = {
+    backgroundColor: "rgb(73, 151, 216)",
+    color: "white",
+  };
 
-  // users.forEach((user) => console.log("for each user", user.user_id));
-  // let check = currentBoardUsers.board.hasOwnProperty("users");
-  // console.log("check", check);
+  const closeDate = () => {
+    if (dueDateClicked === false) {
+      setDueDateClicked(true);
+
+      setTab("DATE");
+    } else {
+      setDueDateClicked(false);
+      setTab("");
+    }
+  };
+
+  const closeLabel = () => {
+    if (labelClicked === false) {
+      setLabelClicked(true);
+      setTab("LABEL");
+    } else {
+      setLabelClicked(false);
+      setTab("");
+    }
+  };
+
+  const handleAddMembers = async (user_id, i) => {
+    let copy = [...setPopupFilterArray];
+    let task_id = currentTaskData.task.task_id;
+    let newCopy = copy.filter((user) => user.user_id !== user_id);
+    console.log("copy", newCopy);
+
+    let payload = {
+      user_id: user_id,
+      task_id: task_id,
+    };
+
+    setPopupFilterArray(newCopy);
+    await updateTaskMembers(payload);
+  };
+
+  console.log(draggingWindow);
+
+  useEffect(() => {
+    checkMembers();
+  }, [currentTaskData.task]);
+
+  const checkMembers = () => {
+    currentTaskData.task.hasOwnProperty("members") &&
+      currentTaskData.task.members.map((member) => {
+        popupFilterArray.map((user) => {
+          if (user.user_id === member.user_id) {
+            let newMembers = popupFilterArray.filter(
+              (item) => item.user_id !== user.user_id
+            );
+            setPopupFilterArray(newMembers);
+          }
+        });
+      });
+  };
+
+  const getCurrentBoardUsers = () => {
+    const queryParams = { params: { board_id } };
+    axios
+      .get(
+        `http://localhost:9000/.netlify/functions/server/companyboard/boardusers`,
+        queryParams
+      )
+      .then((res) => {
+        console.log("board users data", res.data);
+        setPopupOriginalArray(res.data);
+        setPopupFilterArray(res.data);
+      })
+      .catch((error) => console.error("boards not fetched succesfully", error));
+  };
+
+  useEffect(() => {
+    getCurrentBoardUsers();
+  }, []);
+
+  const onWheel = (e) => {
+    e.preventDefault();
+    const container = document.getElementById("main-right");
+    const containerScrollPosition = document.getElementById("main-right")
+      .scrollLeft;
+    container.scrollTo({
+      top: 0,
+      left: containerScrollPosition + e.deltaY,
+      behaviour: "smooth",
+    });
+  };
+
+  // let newDrag = document.getElementById("task");
+  // if (newDrag) {
+  //   newDrag.addEventListener(
+  //     "dragstart",
+  //     function (e) {
+  //       var crt = this.cloneNode(true);
+  //       crt.style.backgroundColor = "red";
+  //       document.body.appendChild(crt);
+  //       e.dataTransfer.setDragImage(crt, 0, 0);
+  //     },
+  //     false
+  //   );
+  // }
+
+  // dates checkbox //
+  const handleDatesBox = async (checked) => {
+    const copy = { ...dates };
+    copy.checked = !copy.checked;
+    let newChecked = !checked;
+
+    console.log("check copy", copy);
+    dispatch({
+      type: "DATES_BOX",
+      dates: {
+        ...dates,
+        checked: newChecked,
+      },
+    });
+    localStorage.setItem("Dates-checkbox", JSON.stringify(copy));
+  };
+
+  // members checkbox //
+  const handleMembersBox = async (checked) => {
+    const copy = { ...members };
+    copy.checked = !copy.checked;
+    let newChecked = !checked;
+
+    await dispatch({
+      type: "MEMBERS_BOX",
+      members: {
+        ...members,
+        checked: newChecked,
+      },
+    });
+    localStorage.setItem("Members-checkbox", JSON.stringify(copy));
+  };
+
+  // labels checkbox //
+  const handleLabelsBox = async (checked) => {
+    const copy = { ...labels };
+    copy.checked = !copy.checked;
+    let newChecked = !checked;
+
+    console.log("check copy", copy);
+    await dispatch({
+      type: "LABELS_BOX",
+      labels: {
+        ...labels,
+        checked: newChecked,
+      },
+    });
+    localStorage.setItem("Labels-checkbox", JSON.stringify(copy));
+  };
 
   return (
     <>
@@ -467,13 +535,33 @@ export default function Board() {
                 <h3 className="modal-task-name">
                   {currentTaskData.task.message}
                 </h3>
+                {currentTaskData.task.due_date !== null ? (
+                  <div className="due-date-container">
+                    <span>
+                      <FiClock
+                        style={{
+                          color: "white",
+                          marginRight: "3px",
+                          position: "relative",
+                          top: "2px",
+                        }}
+                      />
+                      {currentTaskData.task.due_date}
+                    </span>
+                  </div>
+                ) : null}
               </div>
 
               {editNameClicked ? (
-                <form>
-                  <textarea type="text" />
+                <form onSubmit={(e) => handleEditNameSubmit(e)}>
+                  <textarea
+                    autoFocus
+                    type="text"
+                    value={editDefault}
+                    onChange={(e) => setEditDefault(e.target.value)}
+                  />
                   <div>
-                    <button>Save</button>
+                    <button type="submit">Save</button>
                     <button
                       className="modal-edit-name-close"
                       onClick={() => {
@@ -499,12 +587,7 @@ export default function Board() {
                   Edit
                 </span>
               )}
-              <div
-                className="modal-date-container"
-                style={{ marginTop: "10px" }}
-              >
-                <span>Date created: {modalDate}</span>
-              </div>
+
               <div className="current-task-workers-container">
                 <MdPeopleOutline
                   style={{
@@ -516,6 +599,12 @@ export default function Board() {
                   }}
                 />
                 <span style={{ fontSize: "22px" }}>Members:</span>
+              </div>
+              <div className="current-task-members">
+                {currentTaskData.task.hasOwnProperty("members") &&
+                  currentTaskData.task.members.map((user) => (
+                    <img src={user.profilepic} />
+                  ))}
               </div>
               <div className="modal-comment-container">
                 <div className="comment-header">
@@ -542,8 +631,16 @@ export default function Board() {
             </div>
             <div className="task-modal-right">
               <span>Add</span>
-              <button>
+              <button
+                style={tab === "MEMBERS" ? activeTabStyle : {}}
+                onClick={() => {
+                  setMembersPopup(true);
+
+                  setTab("MEMBERS");
+                }}
+              >
                 <MdPersonOutline
+                  style={tab === "MEMBERS" ? activeTabStyle : {}}
                   style={{
                     color: "grey",
                     fontSize: "16px",
@@ -553,7 +650,38 @@ export default function Board() {
                 />
                 Members
               </button>
-              <button onClick={() => setLabelClicked(!labelClicked)}>
+              {membersPopup && (
+                <div className="members-popup">
+                  <div className="members-popup-header">
+                    <span>Members</span>
+                    <MdClose
+                      className="members-exit"
+                      onClick={() => {
+                        setMembersPopup(false);
+
+                        setTab("");
+                      }}
+                    />
+                  </div>
+                  <div className="members-popup-list">
+                    {popupFilterArray.map((user, i) => (
+                      <div
+                        className="members-popup-users"
+                        onClick={() => handleAddMembers(user.user_id, i)}
+                      >
+                        <img src={user.profilepic} />
+                        <span>{user.username}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              <button
+                style={tab === "LABEL" ? activeTabStyle : {}}
+                onClick={() => {
+                  closeLabel();
+                }}
+              >
                 <MdLabelOutline
                   style={{
                     color: "grey",
@@ -589,7 +717,12 @@ export default function Board() {
                   </button>
                 </div>
               ) : null}
-              <button onClick={() => setDueDateClicked(!dueDateClicked)}>
+              <button
+                style={tab === "DATE" ? activeTabStyle : {}}
+                onClick={() => {
+                  closeDate();
+                }}
+              >
                 <FiClock
                   style={{
                     color: "grey",
@@ -601,13 +734,16 @@ export default function Board() {
                 Due Date
               </button>
               {dueDateClicked ? (
-                <form className="due-date-input">
+                <form
+                  className="due-date-input"
+                  onSubmit={(e) => dueDateHandler(e)}
+                >
                   <input
-                    type="text"
+                    type="date"
                     value={dueDate}
                     onChange={(e) => setDueDate(e.target.value)}
                   />
-                  <button>Save</button>
+                  <button type="submit">Save</button>
                 </form>
               ) : null}
               <button
@@ -628,7 +764,9 @@ export default function Board() {
         </Modal>
         <Modal
           className="edit-modal"
-          onClick={() => setEditModal(false)}
+          onClick={() => {
+            setEditModal(false);
+          }}
           open={editModal}
         >
           <div className="edit-modal-header">
@@ -664,7 +802,11 @@ export default function Board() {
           open={menuOpen}
           padding="0px 0px"
         >
-          <div className="menu-drawer-header"></div>
+          <div className="menu-drawer-header">
+            <span style={{ fontSize: "22px" }}>
+              {currentBoardUsers.board.board_name}
+            </span>
+          </div>
           <div className="menu-members-list">
             <div className="menu-members-container">
               <span>Team Members</span>
@@ -703,6 +845,75 @@ export default function Board() {
             </span>
           </div>
           <div className="board-header-right">
+            <span
+              className="settings-icon"
+              onClick={() => setSettingsPopup(true)}
+            >
+              <IoMdSettings
+                style={{ position: "relative", bottom: "1px", right: "2px" }}
+              />
+              Settings
+            </span>
+            {settingsPopup && (
+              <Draggable
+                onDrag={() => setDraggingWindow(true)}
+                onStop={() => setDraggingWindow(false)}
+              >
+                <div
+                  style={draggingWindow ? { cursor: "grabbing" } : null}
+                  className="settings-popup"
+                >
+                  <div className="settings-popup-header">
+                    <IoMdSettings
+                      style={{
+                        position: "relative",
+                        bottom: "1px",
+                        right: "2px",
+                        color: "black",
+                      }}
+                    />
+                    <span style={{ marginLeft: "3px" }}>Settings</span>
+                    <MdClose
+                      onClick={() => setSettingsPopup(false)}
+                      style={{
+                        position: "relative",
+                        bottom: "1px",
+                        left: "50px",
+                        color: "grey",
+                        fontSize: "18px",
+                        cursor: "pointer",
+                      }}
+                    />
+                  </div>
+                  <div className="settings-popup-checkbox-container">
+                    <div className="settings-popup-check-containers">
+                      <label>{members.label}</label>
+                      <input
+                        type="checkbox"
+                        checked={members.checked}
+                        onChange={() => handleMembersBox(members.checked)}
+                      />
+                    </div>
+                    <div className="settings-popup-check-containers">
+                      <label>{labels.label}</label>
+                      <input
+                        type="checkbox"
+                        checked={labels.checked}
+                        onChange={() => handleLabelsBox(labels.checked)}
+                      />
+                    </div>
+                    <div className="settings-popup-check-containers">
+                      <label>{dates.label}</label>
+                      <input
+                        type="checkbox"
+                        onChange={() => handleDatesBox(dates.checked)}
+                        checked={dates.checked}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </Draggable>
+            )}
             <span className="menu-span" onClick={() => setMenuOpen(true)}>
               Show Menu
             </span>
@@ -742,7 +953,7 @@ export default function Board() {
               </button>
             )}
           </div>
-          <div className="board-main-right">
+          <div className="board-main-right" id="main-right" onWheel={onWheel}>
             {currentBoardData.statuses.map((status, index) => (
               <div
                 className="status-container"
@@ -788,11 +999,17 @@ export default function Board() {
                                 handleEditStatusName(status, index);
                               }}
                               className="edit-icons"
-                              style={{ marginRight: "3px", cursor: "pointer" }}
+                              style={{
+                                marginRight: "3px",
+                                cursor: "pointer",
+                              }}
                             />
                             <MdDelete
                               className="edit-icons"
-                              style={{ marginRight: "2px", cursor: "pointer" }}
+                              style={{
+                                marginRight: "2px",
+                                cursor: "pointer",
+                              }}
                             />
                             <span className="status-dots">
                               <FiMoreHorizontal
@@ -826,10 +1043,14 @@ export default function Board() {
                 )}
 
                 <div className="tasks-container">
-                  {status.tasks.map((task, i) => (
-                    <>
+                  {status.tasks.map((task, i) => {
+                    return (
                       <>
                         <div
+                          id="task"
+                          onClick={async () => {
+                            currentTaskHandler(task.task_id);
+                          }}
                           draggable
                           onDragStart={(e) => {
                             handleDragStart(e, { index, i });
@@ -844,34 +1065,30 @@ export default function Board() {
                           className={
                             dragging ? getStyles({ index, i }) : "task"
                           }
-                          onMouseEnter={() =>
-                            toggleHoveringOn(task.task_id, index)
-                          }
-                          onMouseLeave={() =>
-                            toggleHoveringOff(task.task_id, index)
-                          }
                         >
                           <div className={taskLabelStyles(task)}></div>
                           <div className="task-name-container">
-                            {task.hovering ? (
-                              <>
-                                <span>{task.message} </span>
-                                <MdEdit
-                                  className="task-edit-pen"
-                                  onClick={async () => {
-                                    currentTaskHandler(task.task_id);
+                            <span>{task.message} </span>
+                          </div>
+                          {dates.checked && task.due_date !== null ? (
+                            <div className="task-due-date">
+                              <span>
+                                <FiClock
+                                  style={{
+                                    position: "relative",
+                                    right: "2px",
+                                    top: "1.5px",
+                                    marginRight: "1px",
                                   }}
                                 />
-                                <FaArrowsAlt className="task-drag-icon" />
-                              </>
-                            ) : (
-                              <span>{task.message} </span>
-                            )}
-                          </div>
+                                {task.due_date.split("2020-0")}
+                              </span>
+                            </div>
+                          ) : null}
                         </div>
                       </>
-                    </>
-                  ))}
+                    );
+                  })}
                 </div>
 
                 <div className="status-footer">
@@ -883,6 +1100,7 @@ export default function Board() {
                           onSubmit={() => HandleNewTask(status.status_id)}
                         >
                           <textarea
+                            style={{ fontSize: "17px" }}
                             autoFocus
                             placeholder=""
                             value={taskName.value}

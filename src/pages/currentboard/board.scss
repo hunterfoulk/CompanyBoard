@@ -5,6 +5,7 @@
   overflow: hidden;
   width: 100%;
   height: calc(100vh - 48px);
+
   .edit-task-modal {
     width: 700px;
     min-height: 300px;
@@ -22,6 +23,7 @@
       width: 100%;
       font-size: 25px;
       margin-bottom: 10px;
+
       .task-modal-close {
         margin-right: 5px;
         font-size: 20px;
@@ -31,6 +33,17 @@
     .task-modal-content-container {
       display: flex;
       flex-direction: row;
+      .current-task-members {
+        display: flex;
+        width: 100%;
+        // background-color: green;
+        img {
+          width: 30px;
+          height: 30px;
+          margin-left: 30px;
+          border-radius: 5px;
+        }
+      }
       .task-modal-left {
         display: flex;
         flex-direction: column;
@@ -38,9 +51,18 @@
         // background-color: purple;
         // padding-left: 20px;
         width: 80%;
+        .due-date-container {
+          display: flex;
+          background-color: rgb(93, 184, 93);
+          color: white;
+          margin-left: 30px;
+          padding: 5px 5px;
+          border-radius: 5px;
+          font-size: 12px;
+        }
         .med-label {
           width: 100px;
-          height: 8px;
+          height: 6px;
           background-color: rgb(235, 235, 44);
           border: 1px solid rgb(235, 235, 44);
           border-radius: 20px;
@@ -49,7 +71,7 @@
         }
         .low-label {
           width: 100px;
-          height: 8px;
+          height: 6px;
           background-color: rgb(47, 143, 44);
           border: 1px solid rgb(47, 143, 44);
           border-radius: 20px;
@@ -58,7 +80,7 @@
         }
         .high-label {
           width: 100px;
-          height: 8px;
+          height: 6px;
           background-color: rgb(228, 59, 59);
           border: 1px solid rgb(228, 59, 59);
           border-radius: 20px;
@@ -76,13 +98,15 @@
         .task-modal-task-name {
           display: flex;
           align-items: center;
+          width: 100%;
           // background-color: green;
+
           .modal-task-name {
             display: flex;
-            font-size: 20px;
             padding: 0px;
-            font-size: 25px;
-
+            font-size: 22px;
+            color: #4d4d4d;
+            font-family: jaf-facitweb, Helvetica Neue, Arial, sans-serif;
             margin: 0px;
           }
           .modal-task-edit-name {
@@ -114,6 +138,7 @@
             margin-left: 3px;
             cursor: pointer;
             width: 30%;
+            outline: none;
           }
           .modal-edit-name-close {
             background-color: grey;
@@ -189,6 +214,68 @@
         flex-direction: column;
         // background-color: red;
         width: 20%;
+        .members-popup {
+          position: absolute;
+          display: flex;
+          flex-direction: column;
+          top: 110px;
+          width: 250px;
+          // height: 70px;
+          padding: 0px 5px;
+          background-color: white;
+          box-shadow: 0 0 3px rgb(168, 168, 168);
+          border-radius: 3px;
+
+          .members-popup-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 10px 0px;
+            border-bottom: 1px solid rgb(224, 222, 222);
+            .members-exit {
+              position: relative;
+              left: 65px;
+              font-size: 20px;
+              bottom: 2px;
+              color: grey;
+              cursor: pointer;
+            }
+            span {
+              font-size: 20px;
+              margin-left: 5px;
+              color: grey;
+            }
+          }
+          .members-popup-list {
+            display: flex;
+            flex-direction: column;
+            padding: 5px 5px;
+            .members-popup-users {
+              display: flex;
+              align-items: center;
+              margin-bottom: 10px;
+              padding: 3px 3px;
+              color: black;
+              border-radius: 5px;
+              // background-color: rgb(73, 151, 216);
+              cursor: pointer;
+              img {
+                width: 30px;
+                height: 30px;
+                margin-right: 10px;
+                border-radius: 3px;
+              }
+              span {
+                font-size: 20px;
+              }
+            }
+            .members-popup-users:hover {
+              background-color: rgb(73, 151, 216);
+              color: white;
+            }
+          }
+        }
         .due-date-input {
           display: flex;
           align-items: flex-end;
@@ -282,6 +369,7 @@
           background-color: rgb(230, 230, 230);
           border-radius: 3px;
           margin-bottom: 10px;
+          box-shadow: rgba(0, 0, 0, 0.411) 0 0 2px;
         }
         button:hover {
           background-color: rgb(204, 204, 204);
@@ -449,9 +537,10 @@
   }
   .board-header {
     display: flex;
-
     padding: 10px 10px;
     background-color: #88bbe485;
+    color: #4d4d4d;
+    font-family: jaf-facitweb, Helvetica Neue, Arial, sans-serif;
     .board-header-left {
       display: flex;
       align-items: center;
@@ -472,12 +561,68 @@
       display: flex;
       justify-content: flex-end;
       align-items: center;
+      // background-color: green;
       width: 50%;
+      .settings-popup {
+        position: absolute;
+        width: 200px;
+        height: 200px;
+        right: 200px;
+        top: 50px;
+        padding: 10px;
+        background-color: rgb(248, 248, 248);
+        cursor: grab;
+        border-radius: 5px;
+        border: 1px solid rgba(0, 0, 0, 0.521);
+        .settings-popup-header {
+          display: flex;
+          padding-bottom: 10px;
+          font-family: jaf-facitweb, Helvetica Neue, Arial, sans-serif;
+          color: black;
+          align-items: center;
+          justify-content: center;
+          border-bottom: 1px solid rgb(216, 216, 216);
+        }
+        .settings-popup-checkbox-container {
+          display: flex;
+          flex-direction: column;
+          // background-color: green;
+          cursor: default;
+          margin-top: 15px;
+          .settings-popup-check-containers {
+            display: flex;
+            flex-direction: column;
+            // background: red;
+            margin-bottom: 0px 5px;
+            padding: 5px;
+            label {
+              margin-left: 4.5px;
+            }
+            input {
+              width: 20px;
+              height: 20px;
+              cursor: pointer;
+            }
+          }
+        }
+      }
+
       .menu-span {
         margin-right: 5px;
         text-decoration: underline;
         cursor: pointer;
         color: white;
+      }
+      .settings-icon {
+        display: flex;
+        align-items: center;
+        color: white;
+        font-size: 17px;
+        margin-right: 15px;
+        cursor: pointer;
+      }
+      .settings-icon:hover {
+        text-decoration: underline;
       }
     }
   }
@@ -577,11 +722,29 @@
         outline: none;
       }
     }
+    .board-main-right::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+
+    .board-main-right::-webkit-scrollbar-track {
+      -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0);
+
+      border-radius: 10px;
+    }
+
+    .board-main-right::-webkit-scrollbar-thumb {
+      border-radius: 10px;
+      -webkit-box-shadow: inset 10px 70px 6px rgba(46, 46, 46, 0.521);
+    }
+
     .board-main-right {
       display: flex;
       width: 100%;
       //   background-color: rgb(108, 155, 108);
-      flex-wrap: wrap;
+      // flex-wrap: wrap;
+      overflow-x: auto;
+      padding-right: 10px;
       .status-container {
         display: flex;
         // align-items: stretch;
@@ -628,9 +791,13 @@
         .tasks-container {
           display: flex;
           flex-direction: column;
-          // background-color: red;
+          // background-color: rgb(185, 111, 111);
           // padding: 0px 10px;
+          height: fit-content;
+          // width: 100%;
           width: 100%;
+          max-width: 280px;
+          // padding: 5px;
           margin-bottom: 3px;
           .save-name-container {
             display: flex;
@@ -673,6 +840,7 @@
           .current {
             background-color: purple;
           }
+
           .dragging-task {
             display: flex;
             min-height: 60px;
@@ -681,7 +849,7 @@
             width: 100%;
             background-color: rgb(177, 177, 177);
             border-radius: 5px;
-            cursor: pointer;
+            cursor: move;
             span {
               display: none;
             }
@@ -692,44 +860,55 @@
               display: none;
             }
           }
+          .replace {
+            width: 200px;
+            height: 200px;
+            background-color: yellow;
+          }
           .task {
             display: flex;
             flex-direction: column;
-            min-height: 60px;
+            min-height: 50px;
             margin-bottom: 8px;
             height: fit-content;
-            width: 100%;
+            // width: 100%;
             background-color: white;
             border-radius: 5px;
-            padding-top: 5px;
+            padding: 8px;
             cursor: pointer;
+            .task-due-date {
+              span {
+                // background-color: rgb(88, 161, 88);
+                padding: 2px 3px;
+                border-radius: 3px;
+                font-size: 13px;
+                color: grey;
+               
+              }
+            }
             .task-name-container {
               display: flex;
               justify-content: space-between;
+              // padding: 0px 3px;
+              margin-top: 1px;
             }
             .task-low-label {
-              position: relative;
-              width: 55px;
-              margin-left: 2px;
+              width: 50px;
               height: 8px;
               border-radius: 50px;
               background-color: green;
             }
             .task-med-label {
-              position: relative;
-              width: 55px;
-              margin-left: 2px;
+              width: 50px;
               height: 8px;
               border-radius: 50px;
               background-color: rgb(247, 247, 35);
             }
             .task-high-label {
-              position: relative;
-              width: 55px;
-              margin-left: 2px;
+              width: 50px;
               height: 8px;
               border-radius: 50px;
-              background-color: red;
+              background-color: rgb(209, 49, 49);
             }
             .task-drag-icon {
               position: relative;
@@ -747,8 +926,6 @@
             }
             span {
               font-size: 20px;
-              margin-left: 5px;
-              margin-top: 5px;
               width: 100%;
               // background-color: red;
             }
@@ -760,13 +937,13 @@
 
         .status-header {
           display: flex;
-          color: #4d4d4d;
           font-weight: 600;
           justify-content: space-between;
           font-size: 18px;
           padding: 5px 8px;
           margin-bottom: 3px;
           // background-color: red;
+          color: #4d4d4d;
           font-family: jaf-facitweb, Helvetica Neue, Arial, sans-serif;
           form {
             display: flex;

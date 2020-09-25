@@ -1,7 +1,7 @@
 .navbar {
   display: flex;
   width: 100%;
-  background-color: #88bbe4b7;
+  background-color: #2678ca;
 
   .search-drawer {
     width: 15%;
@@ -139,8 +139,8 @@
     width: 50%;
     .search-icon {
       background-color: rgba(240, 240, 240, 0.781);
-      width: 18px;
-      height: 18px;
+      width: 16px;
+      height: 16px;
       padding: 4.5px 5px;
       border-radius: 3px;
     }
@@ -150,7 +150,7 @@
         background-color: rgba(240, 240, 240, 0.781);
         border: 1px solid grey;
         outline: none;
-        font-size: 16px;
+        font-size: 5px;
         padding-left: 5px;
         height: 90%;
         background-image: url(../../images/search.png);
@@ -177,6 +177,7 @@
     display: flex;
     padding: 10px 0px;
     width: 50%;
+    color: white;
     span {
       font-size: 25px;
     }

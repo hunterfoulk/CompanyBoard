@@ -23,10 +23,6 @@ const initialState = {
     isFetching: true,
     boards: [],
   },
-  currentBoardUsers: {
-    isFetching: true,
-    board: {},
-  },
   currentBoardData: {
     isFetching: true,
     statuses: [],
@@ -34,18 +30,55 @@ const initialState = {
   background: {
     color: "#FFFFFF",
   },
-  currentTaskData: {
-    task: {},
-  },
   searchResults: {
     results: [],
     isFetching: true,
+  },
+  currentBoardUsers: {
+    isFetching: true,
+    board: {},
+  },
+  currentTaskData: {
+    task: {},
+  },
+  popupMembers: {
+    members: [],
+  },
+
+  members: {
+    name: "Members",
+    label: "Members",
+    checked: false,
+  },
+
+  labels: {
+    name: "Labels",
+    label: "Labels",
+    checked: false,
+  },
+
+  dates: {
+    name: "Dates",
+    label: "Due dates",
+    checked: false,
   },
 };
 
 const user = localStorage.getItem("user");
 const token = localStorage.getItem("token");
+let dateSettings = localStorage.getItem("Dates-checkbox");
+let membersSettings = localStorage.getItem("Members-checkbox");
+let labelsSettings = localStorage.getItem("Labels-checkbox");
 
+if (dateSettings) {
+  initialState.dates = JSON.parse(dateSettings);
+}
+if (membersSettings) {
+  initialState.members = JSON.parse(membersSettings);
+}
+if (labelsSettings) {
+  initialState.labels = JSON.parse(labelsSettings);
+}
 if (user) {
   initialState.auth.isAuthenticated = true;
   initialState.auth.user = JSON.parse(user);
@@ -94,11 +127,24 @@ const reducer = (state, action) => {
         ...state,
         currentBoardUsers: action.currentBoardUsers,
       };
+
+    case "POPUP_MEMBERS":
+      return {
+        ...state,
+        popupMembers: action.popupMembers,
+      };
+
+    case "FILTERED_POPUP_MEMBERS":
+      return {
+        ...state,
+        popupMembers: {},
+      };
     case "CURRENT_BOARD_STATUSES":
       return {
         ...state,
         currentBoardData: action.currentBoardData,
       };
+
     case "CURRENT_TASK":
       return {
         ...state,
@@ -125,10 +171,30 @@ const reducer = (state, action) => {
         background: action.background,
       };
 
+    case "MEMBERS_BOX":
+      return {
+        ...state,
+        members: action.members,
+      };
+    case "LABELS_BOX":
+      return {
+        ...state,
+        labels: action.labels,
+      };
+    case "DATES_BOX":
+      return {
+        ...state,
+        dates: action.dates,
+      };
     case "SEARCH_RESULTS":
       return {
         ...state,
         searchResults: action.searchResults,
+      };
+    case "CHECKBOXES":
+      return {
+        ...state,
+        checkBoxes: action.checkBoxes,
       };
     case "RESET_BOARDS":
       return {
