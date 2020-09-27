@@ -42,6 +42,7 @@ export default function Board() {
     currentTask,
     updateLabel,
     updateTaskMembers,
+    changeBackground,
   } = useBoards();
   const [
     {
@@ -87,6 +88,9 @@ export default function Board() {
   const [popupFilterArray, setPopupFilterArray] = useState([]);
   const [settingsPopup, setSettingsPopup] = useState(false);
   const [draggingWindow, setDraggingWindow] = useState(false);
+  const [backgroundPicker, setBackgroundPicker] = useState(false);
+  const dragStatus = useRef();
+  const dragStatusNode = useRef();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -104,9 +108,9 @@ export default function Board() {
 
   const fullPath = window.location.pathname;
   let board_id = window.location.pathname.replace("/board/", "");
-
+  let user_id = auth.user.user_id;
   useEffect(() => {
-    getCurrentBoard(board_id);
+    getCurrentBoard(board_id, user_id);
     getCurrentBoardStatuses(board_id);
 
     return () => {
@@ -447,20 +451,6 @@ export default function Board() {
     });
   };
 
-  // let newDrag = document.getElementById("task");
-  // if (newDrag) {
-  //   newDrag.addEventListener(
-  //     "dragstart",
-  //     function (e) {
-  //       var crt = this.cloneNode(true);
-  //       crt.style.backgroundColor = "red";
-  //       document.body.appendChild(crt);
-  //       e.dataTransfer.setDragImage(crt, 0, 0);
-  //     },
-  //     false
-  //   );
-  // }
-
   // dates checkbox //
   const handleDatesBox = async (checked) => {
     const copy = { ...dates };
@@ -511,9 +501,58 @@ export default function Board() {
     localStorage.setItem("Labels-checkbox", JSON.stringify(copy));
   };
 
+  const [colors, setColors] = useState([
+    {
+      name: "blue",
+      hexcode: "#0079bf",
+    },
+    {
+      name: "green",
+      hexcode: "#519839",
+    },
+    {
+      name: "orange",
+      hexcode: "#ff9f1a",
+    },
+    {
+      name: "red",
+      hexcode: "#b04632",
+    },
+    {
+      name: "yellow",
+      hexcode: "#d29034",
+    },
+    {
+      name: "purple",
+      hexcode: "#89609e",
+    },
+    {
+      name: "cyan",
+      hexcode: "#4bbf6b",
+    },
+  ]);
+
+  const handleBackgroundChange = async (color, i) => {
+    console.log(color.hexcode);
+    let payload = {
+      user_id: auth.user.user_id,
+      board_id: currentBoardUsers.board.board_id,
+      hexcode: color.hexcode,
+    };
+    await changeBackground(payload);
+    setTimeout(() => {
+      getCurrentBoard(board_id, user_id);
+    }, 300);
+  };
+
   return (
     <>
-      <div className="current-board-main">
+      <div
+        className="current-board-main"
+        style={{
+          backgroundColor: `${currentBoardUsers.board.color}`,
+        }}
+      >
         <Modal
           className="edit-task-modal"
           onClick={() => closeTaskModal()}
@@ -820,8 +859,52 @@ export default function Board() {
           </div>
           <div className="menu-actions-container">
             <div className="bg-container">
-              <div className="bg-color"></div>
+              <div
+                style={{ backgroundColor: `${currentBoardUsers.board.color}` }}
+                onClick={() => setBackgroundPicker(true)}
+                className="bg-color"
+              ></div>
               <span>Change Background</span>
+              {backgroundPicker ? (
+                <Draggable
+                  onDrag={() => setDraggingWindow(true)}
+                  onStop={() => setDraggingWindow(false)}
+                >
+                  <div
+                    className="background-popup"
+                    style={draggingWindow ? { cursor: "grabbing" } : null}
+                  >
+                    <div className="background-popup-header">
+                      <span>Change Background</span>
+                      <MdClose
+                        style={{
+                          position: "relative",
+                          left: "40px",
+                          cursor: "pointer",
+                        }}
+                        onClick={() => setBackgroundPicker(false)}
+                      />
+                    </div>
+                    <span
+                      style={{
+                        textAlign: "center",
+                        color: "rgb(110, 110, 110)",
+                      }}
+                    >
+                      Colors
+                    </span>
+                    <div className="background-popup-colors-container">
+                      {colors.map((color, i) => (
+                        <div
+                          onClick={() => handleBackgroundChange(color, i)}
+                          style={{ backgroundColor: `${color.hexcode}` }}
+                          className="color-palette"
+                        ></div>
+                      ))}
+                    </div>
+                  </div>
+                </Draggable>
+              ) : null}
             </div>
           </div>
           <div className="menu-description">
@@ -838,7 +921,12 @@ export default function Board() {
             <p>{currentBoardUsers.board.description}</p>
           </div>
         </Drawer>
-        <div className="board-header">
+        <div
+          className="board-header"
+          style={{
+            backgroundColor: `${currentBoardUsers.board.color}`,
+          }}
+        >
           <div className="board-header-left">
             <span className="board-name">
               {currentBoardUsers.board.board_name}
@@ -920,7 +1008,12 @@ export default function Board() {
           </div>
         </div>
 
-        <div className="board-bottom">
+        <div
+          className="board-bottom"
+          style={{
+            backgroundColor: `${currentBoardUsers.board.color}`,
+          }}
+        >
           <div className="board-main-left">
             {createClicked ? (
               <div className="create-input-container">
@@ -1085,6 +1178,15 @@ export default function Board() {
                               </span>
                             </div>
                           ) : null}
+                          <div className="task-members-list-container">
+                            {members.checked && dragging !== true
+                              ? task.members.map((member) => (
+                                  <div className="task-member">
+                                    <img src={member.profilepic} />
+                                  </div>
+                                ))
+                              : null}
+                          </div>
                         </div>
                       </>
                     );

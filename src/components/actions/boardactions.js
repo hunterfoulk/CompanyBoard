@@ -20,6 +20,7 @@ const useBoards = () => {
       .then(async (res) => {
         console.log("created boards", res.data);
         let response = res.data;
+
         await attachCreatedUsers(response);
       })
       .catch((error) => console.error("videos not fetched succesfully", error));
@@ -107,8 +108,9 @@ const useBoards = () => {
     });
   };
 
-  const getCurrentBoard = async (board_id) => {
-    const queryParams = { params: { board_id } };
+  const getCurrentBoard = async (board_id, user_id) => {
+    // let user_id = auth.user.user_id;
+    const queryParams = { params: { board_id, user_id } };
     axios
       .get(
         `http://localhost:9000/.netlify/functions/server/companyboard/currentboard`,
@@ -147,7 +149,7 @@ const useBoards = () => {
           dispatch({
             type: "CURRENT_BOARD_USERS",
             currentBoardUsers: {
-              isAuthenticated: false,
+              isFetching: false,
               board: response,
             },
           });
@@ -173,7 +175,14 @@ const useBoards = () => {
           response.editer = false;
           response.editingName = false;
         });
-        await attachTasks(response);
+
+        dispatch({
+          type: "CURRENT_BOARD_STATUSES",
+          currentBoardData: {
+            ...currentBoardData,
+            statuses: response,
+          },
+        });
       })
       .catch((error) => console.error("videos not fetched succesfully", error));
   };
@@ -193,36 +202,21 @@ const useBoards = () => {
           .then((res) => {
             count++;
             response[i].tasks = res.data;
-            res.data.forEach((res, i) => {
-              let task_id = res.task_id;
-              let params = { params: { task_id } };
-
-              axios
-                .get(
-                  `http://localhost:9000/.netlify/functions/server/companyboard/taskusers`,
-                  params
-                )
-                .then((usersRes) => {
-                  console.log("this is the users response", usersRes.data);
-                  res[i] = usersRes.data;
-                  if (count === response.length) {
-                    dispatch({
-                      type: "CURRENT_BOARD_STATUSES",
-                      currentBoardData: {
-                        ...currentBoardData,
-                        statuses: response,
-                      },
-                    });
-                  }
-                })
-                .catch((error) =>
-                  console.error("users not fetched succesfully", error)
-                );
-            });
+            if (count === response.length) {
+              dispatch({
+                type: "CURRENT_BOARD_STATUSES",
+                currentBoardData: {
+                  ...currentBoardData,
+                  statuses: response,
+                },
+              });
+            }
           });
       })
       .catch((error) => console.error("tasks not fetched succesfully", error));
   };
+
+  const attachUsersToTasks = (userResponse) => {};
 
   const createNewStatus = async (payload, clearForm) => {
     console.log("payload", payload);
@@ -402,6 +396,23 @@ const useBoards = () => {
       .catch((error) => console.error("videos not fetched succesfully", error));
   };
 
+  const changeBackground = async (payload) => {
+    console.log("payload", payload);
+    let user_id = payload.user_id;
+    let board_id = payload.board_id;
+
+    axios
+      .post(
+        `http://localhost:9000/.netlify/functions/server/companyboard/updatebackground`,
+        payload
+      )
+      .then(async (res) => {
+        console.log("background updated sucessfully", res.data);
+        await getCurrentBoard(user_id, board_id);
+      })
+      .catch((error) => console.error("videos not fetched succesfully", error));
+  };
+
   return {
     getMyBoards,
     getJoinedBoards,
@@ -416,6 +427,7 @@ const useBoards = () => {
     updateLabel,
     updateTaskMembers,
     updateDueDate,
+    changeBackground,
   };
 };
 

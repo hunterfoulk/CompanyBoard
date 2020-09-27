@@ -5,6 +5,7 @@
   overflow: hidden;
   width: 100%;
   height: calc(100vh - 48px);
+  // background-color: rgb(235, 90, 70);
 
   .edit-task-modal {
     width: 700px;
@@ -443,6 +444,7 @@
     display: flex;
     flex-direction: column;
     min-width: 15%;
+    width: fit-content;
     padding: 5px 5px;
     background-color: rgb(241, 241, 241);
     .menu-description {
@@ -481,6 +483,43 @@
       align-items: center;
       padding: 10px 10px;
       margin-top: 5px;
+      .background-popup {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        background-color: rgb(255, 255, 255);
+        width: 230px;
+        min-height: 100px;
+        margin-top: 25px;
+        padding: 10px;
+        margin-right: 5px;
+        border-radius: 3px;
+        box-shadow: 0 0 5px rgb(190, 190, 190);
+        cursor: grab;
+        .background-popup-header {
+          display: flex;
+          justify-content: center;
+          // padding: 5px;
+          padding-bottom: 8px;
+          border-bottom: 1px solid rgb(212, 212, 212);
+          span {
+            color: rgb(110, 110, 110);
+            font-size: 15px;
+          }
+        }
+        .background-popup-colors-container {
+          display: flex;
+          justify-content: center;
+          flex-wrap: wrap;
+          cursor: pointer;
+          .color-palette {
+            width: 50px;
+            height: 35px;
+            border-radius: 3px;
+            margin: 5px;
+          }
+        }
+      }
       .bg-container {
         display: flex;
         flex-direction: row;
@@ -491,7 +530,7 @@
           width: 20px;
           height: 20px;
           border: 1px solid black;
-          background-color: red;
+
           margin-right: 8px;
           cursor: pointer;
           border-radius: 2px;
@@ -539,7 +578,7 @@
     display: flex;
     padding: 10px 10px;
     background-color: #88bbe485;
-    color: #4d4d4d;
+    color: white;
     font-family: jaf-facitweb, Helvetica Neue, Arial, sans-serif;
     .board-header-left {
       display: flex;
@@ -555,6 +594,7 @@
       .board-name {
         font-size: 25px;
         margin-left: 5px;
+        color: white;
       }
     }
     .board-header-right {
@@ -571,9 +611,10 @@
         top: 50px;
         padding: 10px;
         background-color: rgb(248, 248, 248);
+        box-shadow: 0 0 5px rgb(54, 54, 54);
         cursor: grab;
         border-radius: 5px;
-        border: 1px solid rgba(0, 0, 0, 0.521);
+        // border: 1px solid rgba(0, 0, 0, 0.521);
         .settings-popup-header {
           display: flex;
           padding-bottom: 10px;
@@ -595,6 +636,7 @@
             // background: red;
             margin-bottom: 0px 5px;
             padding: 5px;
+            color: black;
             label {
               margin-left: 4.5px;
             }
@@ -629,7 +671,7 @@
   .board-bottom {
     display: flex;
     flex-direction: row;
-    background-color: #88bbe485;
+    // background-color: #88bbe485;
     height: 100%;
     .edit-popup {
       display: flex;
@@ -859,6 +901,15 @@
             .task-drag-icon {
               display: none;
             }
+            .task-modal-content-container {
+              display: none;
+              .task-members {
+                display: none;
+                img {
+                  display: none;
+                }
+              }
+            }
           }
           .replace {
             width: 200px;
@@ -876,6 +927,16 @@
             border-radius: 5px;
             padding: 8px;
             cursor: pointer;
+            .task-members-list-container {
+              display: flex;
+              // background-color: red;
+              justify-content: flex-end;
+              img {
+                width: 25px;
+                height: 25px;
+                border-radius: 50%;
+              }
+            }
             .task-due-date {
               span {
                 // background-color: rgb(88, 161, 88);
@@ -883,7 +944,6 @@
                 border-radius: 3px;
                 font-size: 13px;
                 color: grey;
-               
               }
             }
             .task-name-container {
@@ -894,19 +954,19 @@
             }
             .task-low-label {
               width: 50px;
-              height: 8px;
+              height: 6px;
               border-radius: 50px;
               background-color: green;
             }
             .task-med-label {
               width: 50px;
-              height: 8px;
+              height: 6px;
               border-radius: 50px;
               background-color: rgb(247, 247, 35);
             }
             .task-high-label {
               width: 50px;
-              height: 8px;
+              height: 6px;
               border-radius: 50px;
               background-color: rgb(209, 49, 49);
             }

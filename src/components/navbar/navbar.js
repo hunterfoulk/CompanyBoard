@@ -14,7 +14,10 @@ import { Link, useHistory } from "react-router-dom";
 import useSearch from "../../components/actions/searchactions";
 
 export default function Navbar() {
-  const [{ auth, components, searchResults }, dispatch] = useStateValue();
+  const [
+    { auth, components, searchResults, currentBoardUsers },
+    dispatch,
+  ] = useStateValue();
   const date = new Date(auth.user.join_date).toLocaleDateString();
   const [cameraHover, setCameraHover] = useState(false);
   const [pic, setPic] = useState(null);
@@ -103,13 +106,13 @@ export default function Navbar() {
   }, []);
 
   return (
-    <div className="navbar">
+    <>
       <Drawer
         side="left"
         className="search-drawer"
         onClick={() => setSearhDrawer(false)}
         open={searchDrawer}
-        padding="0px 0px"
+        padding="0px 10px"
       >
         <div className="search-drawer-header">
           <h3>Search A Board</h3>
@@ -175,91 +178,99 @@ export default function Navbar() {
           )}
         </div>
       </Drawer>
-      <Drawer
-        className="main-drawer"
-        onClick={() => setProfileDrawer(false)}
-        open={profileDrawer}
-        padding="0px 0px"
+
+      <div
+        className="navbar"
+        style={{
+          backgroundColor: `${currentBoardUsers.board.color}`,
+          opacity: "0.9",
+        }}
       >
-        <div className="drawer-header">
-          <h1>Profile</h1>
-        </div>
-        <div className="image-container">
-          <div
-            className="image-holder"
-            onMouseLeave={() => setCameraHover(false)}
-          >
-            <label htmlFor="pic-upload">
-              {cameraHover ? <FaCamera className="camera-hover" /> : null}
-            </label>
-            <label htmlFor="pic-upload">
-              <img
-                onMouseEnter={() => setCameraHover(true)}
-                src={pic ? pic : auth.user.profilepic}
-                alt="banner"
-              />
-            </label>
-            <input
-              id="pic-upload"
-              type="file"
-              accept="image/*"
-              onChange={handleEditProfilePic}
-              style={{ display: "none" }}
-            />
-          </div>
-        </div>
-        {pic ? (
-          <button onClick={(e) => handleSubmit(e)} className="save-button">
-            save
-          </button>
-        ) : null}
-        <div className="name-container">
-          <span>{auth.user.username}</span>
-        </div>
-        <div className="email-container" style={{ marginTop: "15px" }}>
-          <span>{auth.user.email}</span>
-        </div>
-        <div className="date-container">
-          <span>Join date: {date}</span>
-        </div>
-        <div className="boards-header">
-          <h1>Boards</h1>
-        </div>
-        <div className="drawer-footer">
-          <button onClick={() => handleLogout()}>Log out</button>
-        </div>
-      </Drawer>
-      <div className="nav-left">
-        <button style={{ cursor: "pointer" }}>
-          <MdHome
-            style={{ fontSize: "20px" }}
-            onClick={() => {
-              history.push("/home");
-            }}
-          />
-        </button>
-        <button
-          style={{ fontSize: "17px" }}
-          onClick={() => {
-            history.push("/boards");
-          }}
+        <Drawer
+          className="main-drawer"
+          onClick={() => setProfileDrawer(false)}
+          open={profileDrawer}
+          padding="0px 0px"
         >
-          <MdDeveloperBoard
-            className="board-button"
-            style={{
-              position: "relative",
-              top: "3px",
-              marginRight: "2px",
+          <div className="drawer-header">
+            <h1>Profile</h1>
+          </div>
+          <div className="image-container">
+            <div
+              className="image-holder"
+              onMouseLeave={() => setCameraHover(false)}
+            >
+              <label htmlFor="pic-upload">
+                {cameraHover ? <FaCamera className="camera-hover" /> : null}
+              </label>
+              <label htmlFor="pic-upload">
+                <img
+                  onMouseEnter={() => setCameraHover(true)}
+                  src={pic ? pic : auth.user.profilepic}
+                  alt="banner"
+                />
+              </label>
+              <input
+                id="pic-upload"
+                type="file"
+                accept="image/*"
+                onChange={handleEditProfilePic}
+                style={{ display: "none" }}
+              />
+            </div>
+          </div>
+          {pic ? (
+            <button onClick={(e) => handleSubmit(e)} className="save-button">
+              save
+            </button>
+          ) : null}
+          <div className="name-container">
+            <span>{auth.user.username}</span>
+          </div>
+          <div className="email-container" style={{ marginTop: "15px" }}>
+            <span>{auth.user.email}</span>
+          </div>
+          <div className="date-container">
+            <span>Join date: {date}</span>
+          </div>
+          <div className="boards-header">
+            <h1>Boards</h1>
+          </div>
+          <div className="drawer-footer">
+            <button onClick={() => handleLogout()}>Log out</button>
+          </div>
+        </Drawer>
+        <div className="nav-left">
+          <button style={{ cursor: "pointer" }}>
+            <MdHome
+              style={{ fontSize: "20px" }}
+              onClick={() => {
+                history.push("/home");
+              }}
+            />
+          </button>
+          <button
+            style={{ fontSize: "17px" }}
+            onClick={() => {
+              history.push("/boards");
             }}
+          >
+            <MdDeveloperBoard
+              className="board-button"
+              style={{
+                position: "relative",
+                top: "3px",
+                marginRight: "2px",
+              }}
+            />
+            Boards
+          </button>
+          <FaSearch
+            onClick={() => setSearhDrawer(true)}
+            className="search-icon"
+            style={{ fontSize: "18px", marginLeft: "5px", cursor: "pointer" }}
           />
-          Boards
-        </button>
-        <FaSearch
-          onClick={() => setSearhDrawer(true)}
-          className="search-icon"
-          style={{ fontSize: "18px", marginLeft: "5px", cursor: "pointer" }}
-        />
-        {/* <form
+          {/* <form
           onSubmit={() => {
             history.push(`/searchresults/${decodeURIComponent(searchTerm)}`);
           }}
@@ -270,22 +281,23 @@ export default function Navbar() {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </form> */}
+        </div>
+        <div className="nav-middle">
+          <span>CompanyBoard</span>
+        </div>
+        <div className="nav-right">
+          <BsPlusSquareFill
+            className="create-board-icon"
+            onClick={() => {
+              history.push("/createboard");
+            }}
+          />
+          <img
+            onClick={() => setProfileDrawer(true)}
+            src={auth.user.profilepic}
+          />
+        </div>
       </div>
-      <div className="nav-middle">
-        <span>CompanyBoard</span>
-      </div>
-      <div className="nav-right">
-        <BsPlusSquareFill
-          className="create-board-icon"
-          onClick={() => {
-            history.push("/createboard");
-          }}
-        />
-        <img
-          onClick={() => setProfileDrawer(true)}
-          src={auth.user.profilepic}
-        />
-      </div>
-    </div>
+    </>
   );
 }
