@@ -58,7 +58,7 @@ export default function Navbar() {
     dispatch({
       type: "logout",
     });
-
+    setProfileDrawer(false);
     history.push("/");
   };
 
@@ -179,13 +179,7 @@ export default function Navbar() {
         </div>
       </Drawer>
 
-      <div
-        className="navbar"
-        style={{
-          backgroundColor: `${currentBoardUsers.board.color}`,
-          opacity: "0.9",
-        }}
-      >
+      <div className="navbar">
         <Drawer
           className="main-drawer"
           onClick={() => setProfileDrawer(false)}
@@ -241,35 +235,16 @@ export default function Navbar() {
           </div>
         </Drawer>
         <div className="nav-left">
-          <button style={{ cursor: "pointer" }}>
-            <MdHome
-              style={{ fontSize: "20px" }}
-              onClick={() => {
-                history.push("/home");
-              }}
-            />
-          </button>
-          <button
-            style={{ fontSize: "17px" }}
-            onClick={() => {
-              history.push("/boards");
-            }}
-          >
-            <MdDeveloperBoard
-              className="board-button"
-              style={{
-                position: "relative",
-                top: "3px",
-                marginRight: "2px",
-              }}
-            />
-            Boards
-          </button>
-          <FaSearch
+          {/* <FaSearch
             onClick={() => setSearhDrawer(true)}
             className="search-icon"
-            style={{ fontSize: "18px", marginLeft: "5px", cursor: "pointer" }}
-          />
+            style={{
+              fontSize: "18px",
+              marginLeft: "50px",
+              cursor: "pointer",
+              backgroundColor: "#7289da",
+            }}
+          /> */}
           {/* <form
           onSubmit={() => {
             history.push(`/searchresults/${decodeURIComponent(searchTerm)}`);

@@ -1,12 +1,29 @@
 .app-container {
   display: flex;
   flex-direction: column;
-  /* background-color: rgb(190, 119, 119); */
-}
-.backdrop {
-  position: fixed;
+  // background-color: rgb(190, 119, 119);
   height: 100vh;
-  width: 100vw;
-  z-index: 100;
-  background-color: rgba($color: black, $alpha: 0.4);
+  overflow-y: hidden;
+  .components-container {
+    display: flex;
+    // background-color: rgb(101, 101, 141);
+    // height: 100vh;
+
+    .components-container-left {
+      display: flex;
+      justify-content: center;
+      min-width: 5%;
+      // padding: 5px;
+      background-color: #23272a;
+      border-top: 1px solid #23272a;
+      border-right: 1px solid #23272a;
+    }
+    .components-container-right {
+      display: flex;
+      justify-content: center;
+      width: 95%;
+      // padding: 5px;
+      // background-color: rgb(190, 88, 105);
+    }
+  }
 }

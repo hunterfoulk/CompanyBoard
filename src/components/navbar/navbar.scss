@@ -6,6 +6,7 @@
   justify-content: center;
   padding: 5px 10px;
   background-color: rgb(253, 253, 253);
+  border-bottom: 1px solid #23272a;
   .drawer-boards-container {
     display: flex;
     // justify-content: center;
@@ -129,7 +130,7 @@
 .navbar {
   display: flex;
   width: 100%;
-  background-color: #2678ca;
+  background-color: #23272a;
 
   .nav-left {
     display: flex;
@@ -178,7 +179,8 @@
     display: flex;
     padding: 10px 0px;
     width: 50%;
-    color: white;
+    color: #7289da;
+    // font-weight: 600;
     span {
       font-size: 25px;
     }
@@ -195,7 +197,7 @@
       font-size: 25px;
       margin-right: 15px;
       cursor: pointer;
-      color: rgb(230, 230, 230);
+      color: #7289da;
     }
     img {
       border-radius: 50%;
@@ -213,20 +215,25 @@
     min-width: 15%;
     width: fit-content;
     background-color: rgb(241, 241, 241);
+
     .drawer-header {
       display: flex;
       width: 100%;
       justify-content: center;
       //   background-color: red;
       //   margin-bottom: 15px;
-      background-color: #88bbe4;
+      background-color: #7289da;
+      z-index: 100;
+      font-family: "Times New Roman", Times, serif;
     }
     .image-container {
       display: flex;
       justify-content: center;
       width: 100%;
-      background-color: #88bbe4;
+      background-color: #7289da;
       padding-bottom: 15px;
+      font-family: "Times New Roman", Times, serif;
+
       .image-holder {
         display: flex;
         justify-content: center;
@@ -270,6 +277,7 @@
       margin-top: 50px;
       justify-content: center;
       font-size: 26px;
+      font-family: "Times New Roman", Times, serif;
     }
     .email-container {
       display: flex;

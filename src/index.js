@@ -41,6 +41,7 @@ const initialState = {
   currentTaskData: {
     task: {},
   },
+
   popupMembers: {
     members: [],
   },
@@ -155,7 +156,7 @@ const reducer = (state, action) => {
         ...state,
         currentBoardData: {
           statuses: state.currentBoardData.statuses.map((status, idx) =>
-            idx === action.statusIdx
+            idx === action.statusId
               ? {
                   ...status,
                   tasks: status.tasks.filter((task, i) => i !== action.taskIdx),
@@ -164,7 +165,36 @@ const reducer = (state, action) => {
           ),
         },
       };
-
+    case "HOVER_MEMBER":
+      return {
+        ...state,
+        currentBoardUsers: {
+          ...state.currentBoardUsers,
+          board: {
+            ...state.currentBoardUsers.board,
+            members: state.currentBoardUsers.board.members.map((member, idx) =>
+              member.user_id === action.memberId
+                ? { ...member, hovering: true }
+                : member
+            ),
+          },
+        },
+      };
+    case "UNHOVER_MEMBER":
+      return {
+        ...state,
+        currentBoardUsers: {
+          ...state.currentBoardUsers,
+          board: {
+            ...state.currentBoardUsers.board,
+            members: state.currentBoardUsers.board.members.map((member, idx) =>
+              member.user_id === action.memberId
+                ? { ...member, hovering: false }
+                : member
+            ),
+          },
+        },
+      };
     case "CHANGE_BACKGROUND":
       return {
         ...state,

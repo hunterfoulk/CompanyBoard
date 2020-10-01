@@ -5,7 +5,14 @@ import { Link, useHistory } from "react-router-dom";
 
 const useBoards = () => {
   const [
-    { auth, components, currentBoardUsers, joinedBoards, currentBoardData },
+    {
+      auth,
+      components,
+      currentBoardUsers,
+      joinedBoards,
+      currentBoardData,
+      popupMembers,
+    },
     dispatch,
   ] = useStateValue();
 
@@ -119,45 +126,68 @@ const useBoards = () => {
       .then(async (res) => {
         console.log("current board 555", res.data);
         let response = res.data;
-        await attachCurrentBoardUsers(response);
+        let responseMembers = response.members;
+        console.log("THIS IS RESPONSE MEMBERS", response.members);
+        await dispatch({
+          type: "POPUP_MEMBERS",
+          popupMembers: {
+            members: responseMembers,
+          },
+        });
+        response.members.forEach((member) => {
+          member.hovering = false;
+          member.clicked = false;
+        });
+
+        dispatch({
+          type: "CURRENT_BOARD_USERS",
+          currentBoardUsers: {
+            isFetching: false,
+            board: response,
+          },
+        });
       })
       .catch((error) => console.error("videos not fetched succesfully", error));
   };
 
-  const attachCurrentBoardUsers = (response) => {
-    let count = 0;
-    let board_id = response.board_id;
-    const queryParams = { params: { board_id } };
-    console.log("FETCH BOARD ID", board_id);
-    axios
-      .get(
-        `http://localhost:9000/.netlify/functions/server/companyboard/boardusers`,
-        queryParams
-      )
-      .then((res) => {
-        count++;
-        response.users = res.data;
-        console.log("board users data", res.data);
-        dispatch({
-          type: "POPUP_MEMBERS",
-          popupMembers: {},
-          members: res.data,
-        });
+  // const attachCurrentBoardUsers = (response) => {
+  //   let count = 0;
+  //   let board_id = response.board_id;
+  //   const queryParams = { params: { board_id } };
+  //   console.log("FETCH BOARD ID", board_id);
+  //   axios
+  //     .get(
+  //       `http://localhost:9000/.netlify/functions/server/companyboard/boardusers`,
+  //       queryParams
+  //     )
+  //     .then((res) => {
+  //       count++;
+  //       response.users = res.data;
+  //       res.data.forEach((user) => {
+  //         user.hovering = false;
+  //         user.clicked = false;
+  //       });
+  //       console.log("board users data", res.data);
+  //       dispatch({
+  //         type: "POPUP_MEMBERS",
+  //         popupMembers: {},
+  //         members: res.data,
+  //       });
 
-        console.log("NEW RESPONSE", response);
-        if (count > 0) {
-          dispatch({
-            type: "CURRENT_BOARD_USERS",
-            currentBoardUsers: {
-              isFetching: false,
-              board: response,
-            },
-          });
-        }
-        console.log("current board data", response);
-      })
-      .catch((error) => console.error("boards not fetched succesfully", error));
-  };
+  //       console.log("NEW RESPONSE", response);
+  //       if (count > 0) {
+  //         dispatch({
+  //           type: "CURRENT_BOARD_USERS",
+  //           currentBoardUsers: {
+  //             isFetching: false,
+  //             board: response,
+  //           },
+  //         });
+  //       }
+  //       console.log("current board data", response);
+  //     })
+  //     .catch((error) => console.error("boards not fetched succesfully", error));
+  // };
 
   const getCurrentBoardStatuses = async (board_id) => {
     const queryParams = { params: { board_id } };

@@ -9,14 +9,12 @@ import { IoMdAdd } from "react-icons/io";
 import useInput from "../../components/hooks/useInput";
 import { MdClose } from "react-icons/md";
 import { MdEdit } from "react-icons/md";
-import { FaEdit } from "react-icons/fa";
-import { FaArrowsAlt } from "react-icons/fa";
 import { FaStream } from "react-icons/fa";
-import { MdPerson } from "react-icons/md";
 import { MdPersonOutline } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
 import { MdLabelOutline } from "react-icons/md";
 import { MdPeopleOutline } from "react-icons/md";
+import { AiFillPlusCircle } from "react-icons/ai";
 import { FaRegComment } from "react-icons/fa";
 import { FaRegWindowMaximize } from "react-icons/fa";
 import { IoMdSettings } from "react-icons/io";
@@ -26,6 +24,12 @@ import { Modal } from "godspeed";
 import "react-tippy/dist/tippy.css";
 import { Tooltip } from "react-tippy";
 import Draggable from "react-draggable";
+import { FaAngleDown } from "react-icons/fa";
+import { MdPersonAdd } from "react-icons/md";
+import { IoIosCloseCircleOutline } from "react-icons/io";
+import useClickOutside from "../../components/hooks/useClickOutside";
+import SettingsTab from "./settingstab";
+import MembersTab from "./memberstab";
 
 export default function Board() {
   const {
@@ -91,6 +95,10 @@ export default function Board() {
   const [backgroundPicker, setBackgroundPicker] = useState(false);
   const dragStatus = useRef();
   const dragStatusNode = useRef();
+  const [draggingStatus, setDraggingStatus] = useState(false);
+  const [boardDropDown, setBoardDropDown] = useState(false);
+  const [boardSettingsModal, setBoardSettingsModal] = useState(false);
+  const [modalTab, setModalTab] = useState("Board Settings");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -239,18 +247,24 @@ export default function Board() {
     await updateTaskName(payload);
   };
 
-  console.log("drag node", dragNode);
+  console.log("drag node", dragNode.current);
 
   const handleDragStart = (e, params) => {
     console.log("task id for drag", params.i);
-
+    console.log("handle drag task params", params);
     dragNode.current = e.target;
     dragNode.current.addEventListener("dragend", handleDragEnd);
     dragTask.current = params;
+    // e.dataTransfer.setData("text/plain", null);
+    // e.target.style.opacity = 1;
     setTimeout(() => {
       setDragging(true);
     }, 0);
   };
+
+  useEffect(() => {
+    setDraggingStatus(false);
+  }, [dragging]);
 
   const handleDragEnd = (e) => {
     console.log("ending drag...");
@@ -363,6 +377,10 @@ export default function Board() {
     backgroundColor: "rgb(73, 151, 216)",
     color: "white",
   };
+  const activeModalStyle = {
+    backgroundColor: "#373a3b",
+    color: "white",
+  };
 
   const closeDate = () => {
     if (dueDateClicked === false) {
@@ -399,8 +417,6 @@ export default function Board() {
     setPopupFilterArray(newCopy);
     await updateTaskMembers(payload);
   };
-
-  console.log(draggingWindow);
 
   useEffect(() => {
     checkMembers();
@@ -501,37 +517,6 @@ export default function Board() {
     localStorage.setItem("Labels-checkbox", JSON.stringify(copy));
   };
 
-  const [colors, setColors] = useState([
-    {
-      name: "blue",
-      hexcode: "#0079bf",
-    },
-    {
-      name: "green",
-      hexcode: "#519839",
-    },
-    {
-      name: "orange",
-      hexcode: "#ff9f1a",
-    },
-    {
-      name: "red",
-      hexcode: "#b04632",
-    },
-    {
-      name: "yellow",
-      hexcode: "#d29034",
-    },
-    {
-      name: "purple",
-      hexcode: "#89609e",
-    },
-    {
-      name: "cyan",
-      hexcode: "#4bbf6b",
-    },
-  ]);
-
   const handleBackgroundChange = async (color, i) => {
     console.log(color.hexcode);
     let payload = {
@@ -545,14 +530,111 @@ export default function Board() {
     }, 300);
   };
 
+  //////////status drag///////////
+  console.log("dragging status", draggingStatus);
+  console.log("dragging task", dragging);
+  console.log("status node", dragStatusNode.current);
+
+  const handleStatusDragStart = (e, params) => {
+    console.log("status being dragged", params.index);
+
+    dragStatusNode.current = e.target;
+    dragStatusNode.current.addEventListener("dragend", handleDragStatusEnd);
+
+    console.log("STATUS DRAGGED FIRED");
+    dragStatus.current = params;
+    if (dragging === true) {
+      setDraggingStatus(false);
+      console.log("draggin false hello");
+    } else {
+      setDraggingStatus(true);
+    }
+  };
+
+  const handleDragStatusEnd = (e) => {
+    console.log("ending drag...");
+    setDraggingStatus(false);
+    dragStatusNode.current.removeEventListener("dragend", handleDragStatusEnd);
+    dragStatus.current = null;
+    dragStatusNode.current = null;
+  };
+
+  const handleDragStatusEnter = (e, index) => {
+    let newList = { ...currentBoardData };
+    console.log("target item index", index);
+
+    console.log("status list", newList.statuses);
+
+    if (e.target !== dragNode.current) {
+      console.log("TARGET IS NOT THE SAME");
+      newList.statuses.splice(
+        index,
+        0,
+        newList.statuses.splice(dragStatus.current.index, 1)[0]
+      );
+      dragTask.current = index;
+    }
+  };
+  const settingsModalHandler = () => {
+    setBoardDropDown(false);
+    setBoardSettingsModal(true);
+  };
+
+  // let defaultPic = currentBoardUsers.board.board_name.charAt(1).toUpperCase();
+  // let newDefaultPic = defaultPic.charAt(1).toUpperCase();
+  // console.log("Default pic", defaultPic);
+  const closeBoardModal = () => {
+    setBoardSettingsModal(false);
+    setTimeout(() => {
+      setModalTab("Board Settings");
+    }, 300);
+  };
+
   return (
     <>
-      <div
-        className="current-board-main"
-        style={{
-          backgroundColor: `${currentBoardUsers.board.color}`,
-        }}
-      >
+      <div className="current-board-main">
+        <Modal
+          className="board-settings-modal"
+          onClick={() => closeBoardModal()}
+          open={boardSettingsModal}
+        >
+          <div className="board-settings-modal-bar"></div>
+
+          <div className="board-settings-modal-wrapper">
+            <div className="board-settings-sidebar">
+              <div
+                className="board-sidebar-item"
+                style={modalTab === "Board Settings" ? activeModalStyle : {}}
+                onClick={() => setModalTab("Board Settings")}
+              >
+                <span>Board Settings</span>
+              </div>
+              <div
+                className="board-sidebar-item"
+                style={modalTab === "Members Settings" ? activeModalStyle : {}}
+                onClick={() => setModalTab("Members Settings")}
+              >
+                <span>Member Settings</span>
+              </div>
+            </div>
+            <div className="board-settings-content">
+              <div className="board-settings-modal-header">
+                <span>{modalTab}</span>
+                <span onClick={() => closeBoardModal(false)}>
+                  <IoIosCloseCircleOutline
+                    style={{
+                      fontSize: "35px",
+                      color: "grey",
+                      cursor: "pointer",
+                    }}
+                  />
+                </span>
+              </div>
+              {modalTab === "Board Settings" && <SettingsTab />}
+              {modalTab === "Members Settings" && <MembersTab />}
+            </div>
+          </div>
+        </Modal>
         <Modal
           className="edit-task-modal"
           onClick={() => closeTaskModal()}
@@ -833,112 +915,90 @@ export default function Board() {
           </div>
         </Modal>
 
-        <Drawer
-          onClick={() => {
-            setMenuOpen(false);
-          }}
-          className="menu-drawer"
-          open={menuOpen}
-          padding="0px 0px"
-        >
-          <div className="menu-drawer-header">
-            <span style={{ fontSize: "22px" }}>
-              {currentBoardUsers.board.board_name}
-            </span>
-          </div>
-          <div className="menu-members-list">
-            <div className="menu-members-container">
-              <span>Team Members</span>
-              <div>
-                {currentBoardUsers.board.hasOwnProperty("users") &&
-                  currentBoardUsers.board.users.map((user) => (
-                    <img src={user.profilepic} />
-                  ))}
-              </div>
-            </div>
-          </div>
-          <div className="menu-actions-container">
-            <div className="bg-container">
-              <div
-                style={{ backgroundColor: `${currentBoardUsers.board.color}` }}
-                onClick={() => setBackgroundPicker(true)}
-                className="bg-color"
-              ></div>
-              <span>Change Background</span>
-              {backgroundPicker ? (
-                <Draggable
-                  onDrag={() => setDraggingWindow(true)}
-                  onStop={() => setDraggingWindow(false)}
-                >
-                  <div
-                    className="background-popup"
-                    style={draggingWindow ? { cursor: "grabbing" } : null}
-                  >
-                    <div className="background-popup-header">
-                      <span>Change Background</span>
-                      <MdClose
+        <div className="board-header">
+          <div className="board-header-left">
+            {boardDropDown && (
+              <div className="board-dropdown">
+                <div className="dropdown-members-list">
+                  <span>Members</span>
+                  <div className="dropdown-members-container">
+                    {currentBoardUsers.board.hasOwnProperty("users") &&
+                      currentBoardUsers.board.users.map((user) => (
+                        <img src={user.profilepic} />
+                      ))}
+                  </div>
+                </div>
+                {currentBoardUsers.board.creator === auth.user.user_id ? (
+                  <>
+                    <div className="dropdown-item">
+                      <span>Create status</span>
+                      <AiFillPlusCircle style={{ marginRight: "5px" }} />
+                    </div>
+                    <div className="dropdown-item">
+                      <span>Invite member</span>
+                      <MdPersonAdd style={{ marginRight: "5px" }} />
+                    </div>
+                    <div
+                      className="dropdown-item"
+                      onClick={() => settingsModalHandler()}
+                    >
+                      <span>Board Settings</span>
+                      <IoMdSettings
                         style={{
-                          position: "relative",
-                          left: "40px",
-                          cursor: "pointer",
+                          marginRight: "5px",
                         }}
-                        onClick={() => setBackgroundPicker(false)}
                       />
                     </div>
-                    <span
-                      style={{
-                        textAlign: "center",
-                        color: "rgb(110, 110, 110)",
-                      }}
-                    >
-                      Colors
-                    </span>
-                    <div className="background-popup-colors-container">
-                      {colors.map((color, i) => (
-                        <div
-                          onClick={() => handleBackgroundChange(color, i)}
-                          style={{ backgroundColor: `${color.hexcode}` }}
-                          className="color-palette"
-                        ></div>
-                      ))}
+                    <div className="dropdown-delete-item">
+                      <span>Delete board</span>
+                      <MdDelete style={{ marginRight: "5px" }} />
                     </div>
-                  </div>
-                </Draggable>
-              ) : null}
-            </div>
-          </div>
-          <div className="menu-description">
-            <div className="menu-description-header">
-              <FaStream className="description-icon" />
-              <span>Description</span>
-            </div>
-            {currentBoardUsers.board.creator === auth.user.user_id ? (
-              <div className="description-edit-container">
-                <span className="description-edit-button">Edit</span>
+                  </>
+                ) : (
+                  <>
+                    <div
+                      className="dropdown-item"
+                      onClick={() => setBoardDropDown(false)}
+                    >
+                      <span>Create status</span>
+                    </div>
+                    <div className="dropdown-item">
+                      <span>Invite member</span>
+                    </div>
+                    <div className="dropdown-item" style={{ color: "red" }}>
+                      <span>Leave board</span>
+                    </div>
+                  </>
+                )}
               </div>
-            ) : null}
+            )}
+            <div
+              className="board-name-container"
+              onClick={() => setBoardDropDown(!boardDropDown)}
+            >
+              <span className="board-name">
+                {currentBoardUsers.board.board_name}
+              </span>
 
-            <p>{currentBoardUsers.board.description}</p>
+              {boardDropDown ? (
+                <span className="header-arrow">
+                  <MdClose onClick={() => setBoardDropDown(false)} />
+                </span>
+              ) : (
+                <span className="header-arrow">
+                  <FaAngleDown />
+                </span>
+              )}
+            </div>
           </div>
-        </Drawer>
-        <div
-          className="board-header"
-          style={{
-            backgroundColor: `${currentBoardUsers.board.color}`,
-          }}
-        >
-          <div className="board-header-left">
-            <span className="board-name">
-              {currentBoardUsers.board.board_name}
-            </span>
-          </div>
+
           <div className="board-header-right">
             <span
               className="settings-icon"
               onClick={() => setSettingsPopup(true)}
             >
               <IoMdSettings
-                style={{ position: "relative", bottom: "1px", right: "2px" }}
+                style={{ marginRight: "5px", marginBottom: "2px" }}
               />
               Settings
             </span>
@@ -955,7 +1015,7 @@ export default function Board() {
                     <IoMdSettings
                       style={{
                         position: "relative",
-                        bottom: "1px",
+                        top: "5px",
                         right: "2px",
                         color: "black",
                       }}
@@ -1002,59 +1062,36 @@ export default function Board() {
                 </div>
               </Draggable>
             )}
-            <span className="menu-span" onClick={() => setMenuOpen(true)}>
-              Show Menu
-            </span>
           </div>
         </div>
 
-        <div
-          className="board-bottom"
-          style={{
-            backgroundColor: `${currentBoardUsers.board.color}`,
-          }}
-        >
-          <div className="board-main-left">
-            {createClicked ? (
-              <div className="create-input-container">
-                <label>Create new status</label>
-                <form onSubmit={(e) => handleSubmit(e)}>
-                  <input
-                    type="text"
-                    value={statusName.value}
-                    onChange={statusName.onChange}
-                  />
-                  <div className="create-buttons-container">
-                    <button
-                      className="create-button"
-                      onClick={(e) => handleSubmit(e)}
-                    >
-                      Create New
-                    </button>
-                    <span>
-                      <MdClose
-                        className="exit"
-                        onClick={() => setCreateClicked(false)}
-                      />
-                    </span>
-                  </div>
-                </form>
-              </div>
-            ) : (
-              <button onClick={() => setCreateClicked(true)}>
-                <FiPlus className="plus" /> Create status list
-              </button>
-            )}
-          </div>
+        <div className="board-bottom">
           <div className="board-main-right" id="main-right" onWheel={onWheel}>
             {currentBoardData.statuses.map((status, index) => (
               <div
+                draggable
+                onDragStart={(e) => {
+                  handleStatusDragStart(e, { status, index });
+                }}
                 className="status-container"
                 onDragEnter={
                   dragging && !status.tasks.length
                     ? (e) => handleDragEnter(e, { index, i: 0 })
                     : null
                 }
+                onDragEnter={
+                  draggingStatus
+                    ? (e) => handleDragStatusEnter(e, index)
+                    : dragging && !status.tasks.length
+                    ? (e) => handleDragEnter(e, { index, i: 0 })
+                    : null
+                }
+                // onDragEnter={() => {
+                //   if (dragging === true && !status.tasks.length)
+                //     return (e) => handleDragEnter(e, { index, i: 0 });
+                //   else if (draggingStatus === true)
+                //     return (e) => handleDragStatusEnter(e, index);
+                // }}
               >
                 {status.editer ? (
                   <>
@@ -1140,10 +1177,6 @@ export default function Board() {
                     return (
                       <>
                         <div
-                          id="task"
-                          onClick={async () => {
-                            currentTaskHandler(task.task_id);
-                          }}
                           draggable
                           onDragStart={(e) => {
                             handleDragStart(e, { index, i });
@@ -1155,6 +1188,10 @@ export default function Board() {
                                 }
                               : null
                           }
+                          id="task"
+                          onClick={async () => {
+                            currentTaskHandler(task.task_id);
+                          }}
                           className={
                             dragging ? getStyles({ index, i }) : "task"
                           }
@@ -1179,7 +1216,7 @@ export default function Board() {
                             </div>
                           ) : null}
                           <div className="task-members-list-container">
-                            {members.checked && dragging !== true
+                            {members.checked
                               ? task.members.map((member) => (
                                   <div className="task-member">
                                     <img src={member.profilepic} />

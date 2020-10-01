@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import "./App.scss";
 import Navbar from "./components/navbar/navbar";
@@ -10,6 +10,8 @@ import CreateBoard from "./components/createboard/createboard";
 import { useStateValue } from "./state";
 import Board from "./pages/currentboard/board";
 import Searchresults from "./pages/searchresults/searchresults";
+import Sidebar from "./components/sidebar/sidebar";
+import useBoards from "./components/actions/boardactions";
 
 const App = () => {
   const [
@@ -23,12 +25,18 @@ const App = () => {
     },
     dispatch,
   ] = useStateValue();
+  const { getMyBoards, getJoinedBoards, filterBoardData } = useBoards();
+  useEffect(() => {
+    getMyBoards(user_id);
+    getJoinedBoards(user_id);
+  }, []);
+
+  const user_id = auth.user.user_id;
 
   return (
     <>
       <Router>
         <div className="app-container">
-          {components.backdrop && <div className="backdrop"></div>}
           <Route
             exact
             path="/"
@@ -48,61 +56,93 @@ const App = () => {
               </>
             )}
           ></Route>
+          <Navbar />
+          <div className="components-container">
+            <div className="components-container-left">
+              <Sidebar />
+            </div>
+            <div className="components-container-right">
+              <Route
+                exact
+                path="/home"
+                render={() => (
+                  <>
+                    <Home />
+                  </>
+                )}
+              ></Route>
 
-          <Route
-            exact
-            path="/home"
-            render={() => (
-              <>
-                <Navbar />
-                <Home />
-              </>
-            )}
-          ></Route>
+              <Route
+                exact
+                path="/board/:board_id"
+                render={() => (
+                  <>
+                    <Board />
+                  </>
+                )}
+              ></Route>
 
-          <Route
-            exact
-            path="/createboard"
-            render={() => (
-              <>
-                <Navbar />
-                <CreateBoard />
-              </>
-            )}
-          ></Route>
+              <Route
+                exact
+                path="/searchresults/:searchterm"
+                render={() => (
+                  <>
+                    <Searchresults />
+                  </>
+                )}
+              ></Route>
+            </div>
 
-          <Route
-            exact
-            path="/boards"
-            render={() => (
-              <>
-                <Navbar />
-                <Boards />
-              </>
-            )}
-          ></Route>
+            {/* <Route
+              exact
+              path="/home"
+              render={() => (
+                <>
+                  <Home />
+                </>
+              )}
+            ></Route> */}
 
-          <Route
-            exact
-            path="/board/:board_id"
-            render={() => (
-              <>
-                <Navbar />
-                <Board />
-              </>
-            )}
-          ></Route>
+            <Route
+              exact
+              path="/createboard"
+              render={() => (
+                <>
+                  <CreateBoard />
+                </>
+              )}
+            ></Route>
 
-          <Route
-            exact
-            path="/searchresults/:searchterm"
-            render={() => (
-              <>
-                <Navbar />
-                <Searchresults />
-              </>
-            )}
-          ></Route>
+            {/* <Route
+              exact
+              path="/boards"
+              render={() => (
+                <>
+                  <Boards />
+                </>
+              )}
+            ></Route> */}
+
+            {/* <Route
+              exact
+              path="/board/:board_id"
+              render={() => (
+                <>
+                  <Board />
+                </>
+              )}
+            ></Route>
+
+            <Route
+              exact
+              path="/searchresults/:searchterm"
+              render={() => (
+                <>
+                  <Searchresults />
+                </>
+              )}
+            ></Route> */}
+          </div>
         </div>
       </Router>
     </>
