@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Dosis:wght@600&display=swap");
+
 .search-drawer {
   width: 15%;
   display: flex;
@@ -130,7 +132,9 @@
 .navbar {
   display: flex;
   width: 100%;
-  background-color: #23272a;
+  // background-color: #23272a;
+  // background-color: #363e59;
+  background-color: transparent;
 
   .nav-left {
     display: flex;
@@ -180,9 +184,11 @@
     padding: 10px 0px;
     width: 50%;
     color: #7289da;
+    // color: #ff2e58;
     // font-weight: 600;
     span {
       font-size: 25px;
+      margin-left: 80px;
     }
   }
   .nav-right {

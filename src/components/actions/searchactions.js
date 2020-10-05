@@ -16,10 +16,16 @@ const useSearch = () => {
         `http://localhost:9000/.netlify/functions/server/companyboard/searchboards`,
         queryParams
       )
-      .then(async (res) => {
+      .then((res) => {
         console.log("search response", res.data);
         const response = res.data;
-        await attachUsers(response);
+        dispatch({
+          type: "SEARCH_RESULTS",
+          searchResults: {
+            results: response,
+            isFetching: false,
+          },
+        });
       })
       .catch((error) => {
         console.log(error, "search term error");

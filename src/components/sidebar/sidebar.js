@@ -26,7 +26,13 @@ export default function Sidebar() {
   return (
     <div className="boards-main-left">
       <div className="boards-container">
-        <span className="boards-home-button">
+        <span
+          className="boards-home-button"
+          style={{ marginTop: "10px" }}
+          onClick={() => {
+            history.push(`/search`);
+          }}
+        >
           <FaSearch style={{ fontSize: "22px" }} />
         </span>
         <span className="boards-home-button">
@@ -41,17 +47,26 @@ export default function Sidebar() {
                 trigger="mouseenter"
                 className="tooltip"
                 position="right"
-                size="small"
+                size="md"
                 style={{ padding: "5px" }}
               >
-                <div
-                  className="default-board-div"
-                  onClick={() => {
-                    history.push(`/board/${board.board_id}`);
-                  }}
-                >
-                  <span className="default-board-pic">{defaultPic}</span>
-                </div>
+                {board.board_pic !== null ? (
+                  <img
+                    src={board.board_pic}
+                    onClick={() => {
+                      history.push(`/board/${board.board_id}`);
+                    }}
+                  />
+                ) : (
+                  <div
+                    className="default-board-div"
+                    onClick={() => {
+                      history.push(`/board/${board.board_id}`);
+                    }}
+                  >
+                    <span className="default-board-pic">{defaultPic}</span>
+                  </div>
+                )}
               </Tooltip>
             </>
           );

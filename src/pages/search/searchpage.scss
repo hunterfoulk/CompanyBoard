@@ -1,0 +1,79 @@
+@import url("https://fonts.googleapis.com/css2?family=Dosis:wght@600&display=swap");
+.search-page-main {
+  width: 100%;
+  flex-direction: column;
+  // background-color: #393b3d;
+  // background-color: #393b3d;
+  // background-color: #363e59;
+  display: flex;
+  height: 100vh;
+  background: linear-gradient(transparent 100px, #363e59 300px),
+    url(../../images/starry-sky.png) center top/auto 450px repeat-x;
+  .search-header-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    // background-color: rgb(170, 113, 113);
+    margin-top: 50px;
+    h2 {
+      font-size: 40px;
+      //   font-family: "Dosis", sans-serif;
+      //   letter-spacing: 0.2rem;
+      font-weight: 500;
+      color: #e6e6e6;
+      font-weight: 600;
+    }
+  }
+  .search-input-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    // background-color: green;
+    form {
+      display: flex;
+      justify-content: center;
+      padding: 1rem;
+      background: rgba(10, 10, 10, 0.2);
+      width: 50%;
+      border-radius: 5px;
+      input {
+        width: 60%;
+        padding: 5px;
+        outline: none;
+      }
+      button {
+        background-color: #afafaf3f;
+        border-color: transparent;
+        color: #ccc;
+        cursor: pointer;
+        padding: 10px;
+        border-radius: 3px;
+        outline: none;
+      }
+      button:hover {
+        background-color: #7e7e7e3f;
+      }
+    }
+  }
+  .filters-container {
+    display: flex;
+    // background-color: red;
+    width: 100%;
+    justify-content: center;
+    .filter {
+      display: flex;
+      justify-content: center;
+      color: #e6e6e6;
+      background-color: #64697d;
+      padding: 5px 10px;
+      margin: 8px;
+      min-width: 50px;
+      font-size: 20px;
+      cursor: pointer;
+      border-radius: 3px;
+    }
+    .filter:hover {
+      background-color: #575c6e4b;
+    }
+  }
+}

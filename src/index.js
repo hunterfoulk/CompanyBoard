@@ -195,6 +195,37 @@ const reducer = (state, action) => {
           },
         },
       };
+
+    case "CLICKED_MEMBER":
+      return {
+        ...state,
+        currentBoardUsers: {
+          ...state.currentBoardUsers,
+          board: {
+            ...state.currentBoardUsers.board,
+            members: state.currentBoardUsers.board.members.map((member, idx) =>
+              member.user_id === action.memberId
+                ? { ...member, clicked: true }
+                : member
+            ),
+          },
+        },
+      };
+    case "UNCLICK_MEMBER":
+      return {
+        ...state,
+        currentBoardUsers: {
+          ...state.currentBoardUsers,
+          board: {
+            ...state.currentBoardUsers.board,
+            members: state.currentBoardUsers.board.members.map((member, idx) =>
+              member.user_id === action.memberId
+                ? { ...member, clicked: false }
+                : member
+            ),
+          },
+        },
+      };
     case "CHANGE_BACKGROUND":
       return {
         ...state,

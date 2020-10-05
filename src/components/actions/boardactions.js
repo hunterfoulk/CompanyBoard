@@ -150,44 +150,35 @@ const useBoards = () => {
       .catch((error) => console.error("videos not fetched succesfully", error));
   };
 
-  // const attachCurrentBoardUsers = (response) => {
-  //   let count = 0;
-  //   let board_id = response.board_id;
-  //   const queryParams = { params: { board_id } };
-  //   console.log("FETCH BOARD ID", board_id);
-  //   axios
-  //     .get(
-  //       `http://localhost:9000/.netlify/functions/server/companyboard/boardusers`,
-  //       queryParams
-  //     )
-  //     .then((res) => {
-  //       count++;
-  //       response.users = res.data;
-  //       res.data.forEach((user) => {
-  //         user.hovering = false;
-  //         user.clicked = false;
-  //       });
-  //       console.log("board users data", res.data);
-  //       dispatch({
-  //         type: "POPUP_MEMBERS",
-  //         popupMembers: {},
-  //         members: res.data,
-  //       });
+  const createBoard = async (payload) => {
+    let formData = new FormData();
 
-  //       console.log("NEW RESPONSE", response);
-  //       if (count > 0) {
-  //         dispatch({
-  //           type: "CURRENT_BOARD_USERS",
-  //           currentBoardUsers: {
-  //             isFetching: false,
-  //             board: response,
-  //           },
-  //         });
-  //       }
-  //       console.log("current board data", response);
-  //     })
-  //     .catch((error) => console.error("boards not fetched succesfully", error));
-  // };
+    formData.append("user_id", payload.user_id);
+    formData.append("picFile", payload.picFile);
+    formData.append("category", payload.category);
+    formData.append("boardName", payload.boardName);
+
+    let headers = {
+      "Content-Type": "multipart/form-data",
+    };
+
+    await axios
+      .post(
+        "http://localhost:9000/.netlify/functions/server/companyboard/newboard",
+        formData,
+        {
+          headers: headers,
+          withCredentials: true,
+        }
+      )
+      .then((res) => {
+        console.log(res);
+      })
+
+      .catch((error) => {
+        console.error("error", error);
+      });
+  };
 
   const getCurrentBoardStatuses = async (board_id) => {
     const queryParams = { params: { board_id } };
@@ -216,37 +207,6 @@ const useBoards = () => {
       })
       .catch((error) => console.error("videos not fetched succesfully", error));
   };
-
-  const attachTasks = (response) => {
-    let count = 0;
-    response
-      .forEach((status, i) => {
-        let status_id = status.status_id;
-        const queryParams = { params: { status_id } };
-        console.log("for each log", status_id);
-        axios
-          .get(
-            `http://localhost:9000/.netlify/functions/server/companyboard/tasks`,
-            queryParams
-          )
-          .then((res) => {
-            count++;
-            response[i].tasks = res.data;
-            if (count === response.length) {
-              dispatch({
-                type: "CURRENT_BOARD_STATUSES",
-                currentBoardData: {
-                  ...currentBoardData,
-                  statuses: response,
-                },
-              });
-            }
-          });
-      })
-      .catch((error) => console.error("tasks not fetched succesfully", error));
-  };
-
-  const attachUsersToTasks = (userResponse) => {};
 
   const createNewStatus = async (payload, clearForm) => {
     console.log("payload", payload);
@@ -443,6 +403,35 @@ const useBoards = () => {
       .catch((error) => console.error("videos not fetched succesfully", error));
   };
 
+  const handleUpdateBoardPic = async (payload, clearForm) => {
+    let board_id = payload.board_id;
+    let boardPic = payload.boardPic;
+    let formData = new FormData();
+
+    formData.append("board_id", board_id);
+    formData.append("boardPic", boardPic);
+
+    let headers = {
+      "Content-Type": "multipart/form-data",
+    };
+
+    axios
+      .post(
+        `http://localhost:9000/.netlify/functions/server/companyboard/updateboardpic`,
+        formData,
+        {
+          headers: headers,
+          withCredentials: true,
+        }
+      )
+      .then(async (res) => {
+        console.log("new task name ", res.data);
+        // await getCurrentBoardStatuses(board_id);
+        await getCurrentBoard(board_id);
+      })
+      .catch((error) => console.error("videos not fetched succesfully", error));
+  };
+
   return {
     getMyBoards,
     getJoinedBoards,
@@ -458,6 +447,8 @@ const useBoards = () => {
     updateTaskMembers,
     updateDueDate,
     changeBackground,
+    handleUpdateBoardPic,
+    createBoard,
   };
 };
 

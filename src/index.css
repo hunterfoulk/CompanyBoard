@@ -1,5 +1,7 @@
 body {
-  margin: 0;
-  padding: 0;
+  margin: 0px;
+  padding: 0px;
   background-color: #23272a;
+  /* display: none; */
+  /* height: fit-content; */
 }

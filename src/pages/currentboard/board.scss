@@ -3,11 +3,10 @@
   flex-direction: column;
   align-items: stretch;
   background-color: #393b3d;
-  overflow: hidden;
   width: 100%;
   // height: calc(100vh - 48px);
   height: 100vh;
-  overflow-y: hidden;
+  // overflow: hidden;
   // background-color: rgb(235, 90, 70);
 
   .edit-task-modal {
@@ -591,7 +590,6 @@
     .board-header-left {
       .board-dropdown {
         display: flex;
-
         flex-direction: column;
         background-color: rgb(37, 37, 37);
         display: flex;
@@ -601,8 +599,8 @@
         height: fit-content;
         position: absolute;
         // z-index: 500;
-        top: 110%;
-        top: 10%;
+        // top: 100%;
+        top: 5%;
         left: 5.2%;
         // margin-top: 30%;
         margin-right: 20%;
@@ -1278,6 +1276,21 @@
         width: 20%;
         height: 100%;
         padding: 0px 5px;
+        .board-sidebar-item-remove {
+          display: flex;
+          width: 100%;
+          // background-color: rgb(122, 81, 81);
+          margin-bottom: 15px;
+          color: rgb(189, 53, 53);
+          font-size: 20px;
+          padding: 10px 0px;
+          margin-top: 10px;
+          cursor: pointer;
+          border-radius: 3px;
+          span {
+            margin-left: 10px;
+          }
+        }
         .board-sidebar-item {
           display: flex;
           width: 100%;
@@ -1296,12 +1309,58 @@
         .board-sidebar-item:hover {
           background-color: #7289da;
         }
+        .board-sidebar-item-remove:hover {
+          background-color: rgb(189, 53, 53);
+          color: white;
+        }
       }
       .board-settings-content {
         display: flex;
         // background-color: yellow;
         width: 85%;
         flex-direction: column;
+        .delete-board-container {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          // background-color: orange;
+          .delete-button-container {
+            display: flex;
+            // background-color: yellow;
+            height: 480px;
+            width: 100%;
+            justify-content: flex-end;
+            align-items: flex-end;
+            button {
+              font-size: 20px;
+              height: 30px;
+              cursor: pointer;
+              margin-right: 10px;
+              margin-bottom: 5px;
+              background-color: rgb(189, 53, 53);
+              color: white;
+              border: 1px solid rgb(189, 53, 53);
+              border-radius: 5px;
+            }
+            button:hover {
+              background-color: rgb(173, 45, 45);
+              border: 1px solid rgb(173, 45, 45);
+            }
+          }
+          .delete-content-container {
+            display: flex;
+            justify-content: center;
+            // height: 60%;
+            width: 100%;
+            // background-color: green;
+            // flex-direction: column;
+            span {
+              font-size: 25px;
+              margin-top: 20px;
+              color: white;
+            }
+          }
+        }
         .board-members-tab-container {
           display: flex;
           justify-content: center;
@@ -1318,6 +1377,47 @@
             border-bottom: 1px solid rgba(170, 170, 170, 0.315);
             cursor: pointer;
             padding: 0px 5px;
+            .member-clicked-popup {
+              display: flex;
+              flex-direction: column;
+              background-color: rgb(32, 32, 32);
+              width: 200px;
+              // height: 100px;
+              position: absolute;
+              color: white;
+              left: 90%;
+              top: 20%;
+              padding: 5px 5px;
+              border-radius: 3px;
+              .members-popup-item {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 10px 0px;
+                height: 100%;
+                width: 100%;
+                border-radius: 3px;
+              }
+              .members-popup-item:hover {
+                background-color: rgba(192, 192, 192, 0.219);
+              }
+              .members-popup-item-remove {
+                display: flex;
+                height: 100%;
+                width: 100%;
+                justify-content: center;
+                align-items: center;
+                border-bottom: 1px solid grey;
+                padding: 10px 0px;
+                color: rgb(189, 53, 53);
+                border-radius: 3px;
+              }
+              .members-popup-item-remove:hover {
+                background-color: rgb(189, 53, 53);
+                width: 100%;
+                color: white;
+              }
+            }
             .user-dots {
               position: relative;
               color: rgba(255, 255, 255, 0.459);
@@ -1366,15 +1466,39 @@
               display: flex;
               width: 45%;
               height: 100%;
+              // margin-top: 40px;
               align-items: flex-end;
+              flex-direction: column;
+              // background-color: green;
               justify-content: flex-end;
+              .board-settings-button-container {
+                // background-color: red;
+                position: relative;
+                top: 5px;
+                button {
+                  background: transparent;
+                  color: grey;
+                  cursor: pointer;
+                  border: none;
+                  font-weight: 600;
+                  font-size: 16px;
+                  outline: none;
+                }
+                button:hover {
+                  color: #7289da;
+                }
+              }
             }
             .edit-image-container {
               display: flex;
               width: 45%;
               // background-color: yellow;
               justify-content: flex-end;
-
+              .placeholder-pic {
+                height: 100px;
+                width: 100px;
+                border-radius: 50%;
+              }
               .default-board-pic {
                 display: flex;
                 justify-content: center;

@@ -30,6 +30,7 @@ import { IoIosCloseCircleOutline } from "react-icons/io";
 import useClickOutside from "../../components/hooks/useClickOutside";
 import SettingsTab from "./settingstab";
 import MembersTab from "./memberstab";
+import DeleteTab from "./deletetab";
 
 export default function Board() {
   const {
@@ -382,6 +383,11 @@ export default function Board() {
     color: "white",
   };
 
+  const activeModalStyleRemove = {
+    backgroundColor: "rgb(189, 53, 53)",
+    color: "white",
+  };
+
   const closeDate = () => {
     if (dueDateClicked === false) {
       setDueDateClicked(true);
@@ -616,6 +622,15 @@ export default function Board() {
               >
                 <span>Member Settings</span>
               </div>
+              <div
+                className="board-sidebar-item-remove"
+                style={
+                  modalTab === "Delete Settings" ? activeModalStyleRemove : {}
+                }
+                onClick={() => setModalTab("Delete Settings")}
+              >
+                <span>Delete Board</span>
+              </div>
             </div>
             <div className="board-settings-content">
               <div className="board-settings-modal-header">
@@ -632,6 +647,7 @@ export default function Board() {
               </div>
               {modalTab === "Board Settings" && <SettingsTab />}
               {modalTab === "Members Settings" && <MembersTab />}
+              {modalTab === "Delete Settings" && <DeleteTab />}
             </div>
           </div>
         </Modal>
@@ -949,10 +965,6 @@ export default function Board() {
                         }}
                       />
                     </div>
-                    <div className="dropdown-delete-item">
-                      <span>Delete board</span>
-                      <MdDelete style={{ marginRight: "5px" }} />
-                    </div>
                   </>
                 ) : (
                   <>
@@ -998,7 +1010,7 @@ export default function Board() {
               onClick={() => setSettingsPopup(true)}
             >
               <IoMdSettings
-                style={{ marginRight: "5px", marginBottom: "2px" }}
+                style={{ marginRight: "5px", marginBottom: "1px" }}
               />
               Settings
             </span>

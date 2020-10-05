@@ -2,28 +2,248 @@
   display: flex;
   flex-direction: column;
   // background-color: rgb(190, 119, 119);
-  height: 100vh;
-  overflow-y: hidden;
+  // height: fit-content;
+  // overflow-y: hidden;
+  // height: 100vh;
+  // margin-top: 28px;
+  padding: 0px;
+  overflow-x: hidden;
   .components-container {
     display: flex;
     // background-color: rgb(101, 101, 141);
-    // height: 100vh;
+
+    height: fit-content;
 
     .components-container-left {
       display: flex;
-      justify-content: center;
+      flex-direction: column;
+      // justify-items: space-between;
+      // align-items: center;
+      justify-content: space-between;
       min-width: 5%;
       // padding: 5px;
-      background-color: #23272a;
+      // background-color: #23272a;
+      // background-color: yellow;
       border-top: 1px solid #23272a;
       border-right: 1px solid #23272a;
+      // height: 100%;
+
+      // flex: 1;
+      padding: 0px;
+
+      .profile-pic-container {
+        display: flex;
+        flex-direction: column;
+        // background-color: green;
+        // height: 100%;
+        align-items: flex-end;
+        // justify-content: center;
+        align-items: center;
+
+        // flex: 1;
+        .profile-pic {
+          width: 45px;
+          height: 45px;
+          margin-bottom: 20px;
+          cursor: pointer;
+          border-radius: 50%;
+        }
+        .profile-pic:hover {
+          opacity: 0.9;
+        }
+      }
+      .new-board-button {
+        display: flex;
+        border-radius: 50%;
+        justify-content: center;
+        align-items: center;
+        width: 50px;
+        height: 50px;
+        background-color: rgb(175, 175, 175);
+        margin-bottom: 15px;
+        cursor: pointer;
+        span {
+          font-size: 24px;
+          color: white;
+          position: relative;
+          top: 2px;
+        }
+      }
+      .new-board-button:hover {
+        background-color: #7289da;
+      }
     }
     .components-container-right {
       display: flex;
       justify-content: center;
       width: 95%;
-      // padding: 5px;
+      height: fit-content;
+      height: 100%;
+
+      // padding: 5px
+      // overflow: hidden;
       // background-color: rgb(190, 88, 105);
+    }
+  }
+  .create-modal {
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(251, 251, 251);
+    width: 450px;
+    height: 480px;
+    top: 45%;
+    padding: 0px 10px;
+    .create-close-container {
+      display: flex;
+      height: 20px;
+      // background-color: red;
+      justify-content: flex-end;
+      font-size: 24px;
+      align-items: center;
+      margin-top: 5px;
+      color: grey;
+      cursor: pointer;
+      .create-close-icon:hover {
+        color: black;
+      }
+    }
+    .create-modal-header {
+      display: flex;
+      // background-color: yellow;
+      width: 100%;
+      justify-content: center;
+      span {
+        font-size: 28px;
+        font-weight: 600;
+      }
+    }
+    .create-modal-p {
+      display: flex;
+      // background-color: yellow;
+      text-align: center;
+      p {
+        color: grey;
+        font-size: 17px;
+      }
+    }
+    .create-board-pic-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      // background-color: orange;
+      height: 100px;
+      margin-top: 20px;
+      label {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        // background-color: grey;
+        border: 3px dashed grey;
+        cursor: pointer;
+        .create-plus {
+          position: absolute;
+          // bottom: 5px;
+          margin-bottom: 70px;
+          margin-left: 60px;
+          font-size: 25px;
+          color: #7289da;
+          // border-radius: 50%;
+          z-index: 100;
+        }
+        img {
+          width: 80px;
+          height: 80px;
+          border-radius: 50%;
+        }
+        img:hover {
+          opacity: 0.9;
+        }
+        .first-span {
+          font-size: 32px;
+          color: rgb(88, 88, 88);
+          position: relative;
+          top: 2px;
+        }
+        .second-span {
+          position: relative;
+          bottom: 5px;
+          color: rgb(88, 88, 88);
+        }
+      }
+      label:hover {
+        background-color: rgb(240, 240, 240);
+      }
+    }
+    .board-name-container {
+      display: flex;
+      flex-direction: column;
+      // background-color: yellow;
+      margin-top: 20px;
+      padding: 0px 20px;
+      .custom-select {
+        // background-color: Red;
+        display: flex;
+        margin-top: 5px;
+        select {
+          width: 120px;
+          padding: 5px;
+          cursor: pointer;
+          background-color: #7289da;
+          color: white;
+          outline: none;
+          font-size: 18px;
+          option {
+            // background-color: red;
+            cursor: pointer;
+          }
+        }
+      }
+      label {
+        font-size: 20px;
+        color: rgb(88, 88, 88);
+      }
+      input {
+        outline: none;
+        // border-radius: 2px;
+        outline: none;
+        width: 100%;
+        height: 30px;
+        font-size: 20px;
+        margin-top: 3px;
+      }
+      input:focus {
+        // border: 1px solid #7289da;
+        // border-radius: 2px;
+      }
+      .create-button-container {
+        display: flex;
+        align-items: flex-end;
+        justify-content: flex-end;
+        // background-color: green;
+        height: 100px;
+        width: 100%;
+
+        button {
+          height: 40px;
+          width: 110px;
+          margin-left: 5px;
+          background-color: #7289da;
+          border: 1px solid #7289da;
+          color: white;
+          font-weight: 600;
+          border-radius: 3px;
+          cursor: pointer;
+          outline: none;
+        }
+        button:hover {
+          background-color: #697ecc;
+          border: 1px solid #697ecc;
+        }
+      }
     }
   }
 }

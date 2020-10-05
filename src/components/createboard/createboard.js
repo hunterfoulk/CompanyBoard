@@ -2,7 +2,7 @@ import React from "react";
 import "./createboard.scss";
 import useInput from "../hooks/useInput";
 import { useStateValue } from "../../state";
-import { createBoard } from "../actions/actions";
+// import { createBoard } from "../actions/actions";
 
 const Createboard = () => {
   const [{ auth, components }, dispatch] = useStateValue();
@@ -25,7 +25,7 @@ const Createboard = () => {
       boardDescription.setValue("");
     };
 
-    createBoard(payload, clearForm);
+    // createBoard(payload, clearForm);
   };
 
   return (

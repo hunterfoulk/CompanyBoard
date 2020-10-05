@@ -25,8 +25,8 @@ export default function Navbar() {
   const handleUpdatePic = useUpdate();
   const history = useHistory();
   const [profileDrawer, setProfileDrawer] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
   const [searchDrawer, setSearhDrawer] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const { handleSearch, joinBoard } = useSearch();
 
   const handleEditProfilePic = async (e) => {
@@ -82,103 +82,31 @@ export default function Navbar() {
     joinBoard(payload);
   };
 
-  searchResults.results.map((result, index) => {
-    console.log("RESULTS!", result.users);
+  // searchResults.results.map((result, index) => {
+  //   console.log("RESULTS!", result.users);
 
-    result.users.map((users, i) => {
-      if (users.user_id === auth.user.user_id) {
-        result.joined = true;
-      }
-    });
-  });
+  //   result.users.map((users, i) => {
+  //     if (users.user_id === auth.user.user_id) {
+  //       result.joined = true;
+  //     }
+  //   });
+  // });
 
-  useEffect(() => {
-    return () => {
-      setSearchTerm("");
-      dispatch({
-        type: "SEARCH_RESULTS",
-        searchResults: {
-          results: [],
-          isFetching: true,
-        },
-      });
-    };
-  }, []);
+  // useEffect(() => {
+  //   return () => {
+  //     setSearchTerm("");
+  //     dispatch({
+  //       type: "SEARCH_RESULTS",
+  //       searchResults: {
+  //         results: [],
+  //         isFetching: true,
+  //       },
+  //     });
+  //   };
+  // }, []);
 
   return (
     <>
-      <Drawer
-        side="left"
-        className="search-drawer"
-        onClick={() => setSearhDrawer(false)}
-        open={searchDrawer}
-        padding="0px 10px"
-      >
-        <div className="search-drawer-header">
-          <h3>Search A Board</h3>
-        </div>
-        <div className="search-drawer-input-container">
-          <form onSubmit={(e) => searchHandler(e)}>
-            <input
-              autoFocus
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <button type="submit">Search</button>
-          </form>
-        </div>
-        <div className="drawer-boards-container">
-          {searchResults.results.length === 0 ? (
-            <div className="default-drawer-container">
-              <span>Search boards</span>
-            </div>
-          ) : (
-            <>
-              {searchResults.results.map((board, index) => (
-                <div className="drawer-board-container">
-                  <div className="drawer-board-header">
-                    <span>{board.board_name}</span>
-                  </div>
-                  <>
-                    <div className="drawer-board-users">
-                      {board.users.map((users, i) => (
-                        <img src={users.profilepic} />
-                      ))}
-                    </div>
-
-                    <div className="drawer-join-container">
-                      {board.joined ? (
-                        <span style={{ marginTop: "5px" }}>
-                          You a currently a member.
-                        </span>
-                      ) : (
-                        <button
-                          onClick={async () => {
-                            await handleBoardJoin(board.board_id, index);
-
-                            history.push(`/board/${board.board_id}`);
-                          }}
-                        >
-                          <FiUserPlus
-                            style={{
-                              position: "relative",
-                              right: "6px",
-                              bottom: "1px",
-                            }}
-                          />
-                          Join Board
-                        </button>
-                      )}
-                    </div>
-                  </>
-                </div>
-              ))}
-            </>
-          )}
-        </div>
-      </Drawer>
-
       <div className="navbar">
         <Drawer
           className="main-drawer"

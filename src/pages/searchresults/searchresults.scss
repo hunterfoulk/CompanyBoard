@@ -1,0 +1,157 @@
+.search-results-main {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100vh;
+  height: fit-content;
+  //   padding: 30px 0px;
+  //   overflow-y: scroll;
+  //   background-color: #393b3d;
+  //   background-color: #363e59;
+  //   margin-top: 20px;
+  background: linear-gradient(transparent 100px, #363e59 300px),
+    url(../../images/starry-sky.png) center top/auto 450px repeat-x;
+  flex: 1;
+  padding: 20px 135.5px;
+  .results-header {
+    display: flex;
+    justify-content: center;
+    // background-color: green;
+    margin-top: 50px;
+    h1 {
+      color: #e6e6e6;
+      font-size: 35px;
+      font-weight: bold;
+    }
+  }
+  .search-results-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 35px;
+    // width: 100%;
+    flex-wrap: wrap;
+    // box-sizing: border-box;
+    // background-color: rgb(185, 98, 98);
+    height: 100%;
+    .search-result {
+      display: flex;
+      flex-direction: column;
+      //   background-color: #242732;
+      min-width: 27.3333%;
+      max-width: 27.3333%;
+      height: 400px;
+      //   height: fit-content;
+      border-radius: 4px;
+      //   margin-right: 55px;
+      margin: 20px;
+      //   padding: 5px 5px;
+      background-color: #24262e93;
+      //   background-color: #22242960;
+
+      .search-result-header {
+        display: flex;
+        background-color: rgba(34, 34, 39, 0.808);
+        width: 100%;
+        // background-color: #202020d5;
+        // box-shadow: 0 -5px 5px -5px #242424;
+        box-shadow: rgba(0, 0, 0, 0.145) 0 0 6px;
+        border-top-right-radius: 3px;
+        border-top-left-radius: 3px;
+
+        height: 55px;
+        .result-header-left {
+          display: flex;
+          width: 15%;
+          //   background-color: Red;
+          //   background-color: grey;
+          align-items: center;
+          img {
+            height: 100%;
+            width: 100%;
+            // background-color: transparent;
+          }
+          .null-header-pic {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 24px;
+            height: 100%;
+            width: 100%;
+            background-color: grey;
+          }
+        }
+        .result-header-right {
+          display: flex;
+          align-items: center;
+          width: 85%;
+          //   background-color: yellow;
+          background-color: rgba(128, 128, 128, 0.082);
+
+          span {
+            color: white;
+            font-size: 25px;
+            margin-left: 15px;
+          }
+        }
+      }
+      .board-description-container {
+        display: flex;
+        height: 100%;
+        // background-color: #29292960;
+        color: white;
+        padding: 5px 20px;
+        .label-container {
+          display: flex;
+          width: 100%;
+          //   background-color: red;
+          margin-top: 2px;
+          span {
+            background-color: #1c8c8c;
+            color: #e6e6e6;
+            height: 1em;
+            line-height: 1em;
+            padding: 5px;
+            border-radius: 3px;
+            cursor: default;
+          }
+        }
+        .board-description {
+          display: flex;
+          justify-content: center;
+          color: white;
+          font-size: 17px;
+          line-height: 1.4rem;
+        }
+      }
+    }
+    .request-board-container {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      //   background-color: #29292960;
+      //   padding: 10px;
+      //   background-color: #2f3341be;
+      //   padding: 10px;
+
+      button {
+        width: 90%;
+        max-width: 18.75rem;
+        height: 2.5rem;
+        font-size: 1.2em;
+        opacity: 0.8;
+        background: rgba(10, 10, 10, 0.4);
+        color: #fff;
+        border: none;
+        border-radius: 55px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        outline: none;
+      }
+      button:hover {
+        background-color: #7289da;
+      }
+    }
+  }
+}

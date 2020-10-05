@@ -1,29 +1,12 @@
-import React from "react";
+import React, { useRef } from "react";
 import "./board.scss";
 import { useStateValue } from "../../state";
 import { FaEllipsisV } from "react-icons/fa";
+import useClickOutside from "../../components/hooks/useClickOutside";
 
 export default function Memberstab() {
-  const [
-    {
-      auth,
-      components,
-      createdBoards,
-      joinedBoards,
-      currentBoardUsers,
-      currentBoardData,
-      currentTaskData,
-      popupMembers,
-      taskMembers,
-      checkBoxes,
-      membersBox,
-      labelsBox,
-      dates,
-      members,
-      labels,
-    },
-    dispatch,
-  ] = useStateValue();
+  const [{ currentBoardUsers }, dispatch] = useStateValue();
+  const ref = useRef();
 
   const handleModalHover = (member, i) => {
     console.log(i);
@@ -36,7 +19,14 @@ export default function Memberstab() {
     dispatch({ type: "UNHOVER_MEMBER", memberId: member, memberIndex: i });
   };
 
-  const handleModalMemberClick = (member, i) => {};
+  const handleModalMemberClick = (member, i) => {
+    dispatch({ type: "CLICKED_MEMBER", memberId: member, memberIndex: i });
+  };
+
+  const handleModalUnClickMember = (member, i) => {
+    console.log("REF HANDLER");
+    dispatch({ type: "UNCLICK_MEMBER", memberId: member, memberIndex: i });
+  };
 
   return (
     <div className="board-members-tab-container">
@@ -52,7 +42,26 @@ export default function Memberstab() {
             <span className="user-email">{member.email}</span>
           </div>
 
-          {member.hovering && <FaEllipsisV className="user-dots" />}
+          {member.hovering && (
+            <FaEllipsisV
+              className="user-dots"
+              onClick={() => handleModalMemberClick(member.user_id, i)}
+            />
+          )}
+
+          {member.clicked && (
+            <div className="member-clicked-popup">
+              <div className="members-popup-item-remove">
+                <span>Remove member</span>
+              </div>
+              <div
+                className="members-popup-item"
+                onClick={() => handleModalUnClickMember(member.user_id, i)}
+              >
+                <span>Close</span>
+              </div>
+            </div>
+          )}
         </div>
       ))}
     </div>
