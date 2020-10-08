@@ -28,10 +28,10 @@ import Draggable from "react-draggable";
 import { FaAngleDown } from "react-icons/fa";
 import { MdPersonAdd } from "react-icons/md";
 import { IoIosCloseCircleOutline } from "react-icons/io";
-import useClickOutside from "../../components/hooks/useClickOutside";
 import SettingsTab from "./settingstab";
 import MembersTab from "./memberstab";
 import DeleteTab from "./deletetab";
+import useClickOutside from "../../components/hooks/useClickOutside";
 
 export default function Board() {
   const {
@@ -50,6 +50,7 @@ export default function Board() {
     changeBackground,
     getBoardRequests,
     acceptRequest,
+    updateTaskStatus,
   } = useBoards();
   const [
     {
@@ -94,7 +95,6 @@ export default function Board() {
   const [popupFilterArray, setPopupFilterArray] = useState([]);
   const [settingsPopup, setSettingsPopup] = useState(false);
   const [draggingWindow, setDraggingWindow] = useState(false);
-  const [backgroundPicker, setBackgroundPicker] = useState(false);
   const dragStatus = useRef();
   const dragStatusNode = useRef();
   const [draggingStatus, setDraggingStatus] = useState(false);
@@ -103,6 +103,8 @@ export default function Board() {
   const [modalTab, setModalTab] = useState("Board Settings");
   const [bellModal, setBellModal] = useState(false);
   const [createStatus, setCreateStatus] = useState(false);
+  const ref = useRef();
+  useClickOutside(ref, () => setBellModal(false));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -253,13 +255,13 @@ export default function Board() {
   console.log("drag node", dragNode.current);
 
   const handleDragStart = (e, params) => {
-    console.log("task id for drag", params.i);
+    console.log("task index for drag", params.i);
     console.log("handle drag task params", params);
+    // console.log("TASK ID FOR DRAG", params.task.task_id);
     dragNode.current = e.target;
     dragNode.current.addEventListener("dragend", handleDragEnd);
     dragTask.current = params;
-    // e.dataTransfer.setData("text/plain", null);
-    // e.target.style.opacity = 1;
+
     setTimeout(() => {
       setDragging(true);
     }, 0);
@@ -269,19 +271,35 @@ export default function Board() {
     setDraggingStatus(false);
   }, [dragging]);
 
-  const handleDragEnd = (e) => {
+  const handleDragEnd = async (e) => {
     console.log("ending drag...");
     setDragging(false);
     dragNode.current.removeEventListener("dragend", handleDragEnd);
+    await console.log("AWAITIING!!!!");
+
     dragTask.current = null;
     dragNode.current = null;
   };
 
+  let taskRef = useRef();
   const handleDragEnter = (e, targetItem) => {
     let newList = [...currentBoardData.statuses];
-
+    taskRef = dragTask.current;
     if (e.target !== dragNode.current) {
-      console.log("TARGET IS NOT THE SAME");
+      newList[targetItem.index].tasks.map((task, i) => {
+        if (i === targetItem.i) {
+          let payload = {
+            status_id: parseInt(targetItem.status.status_id),
+            task_id: task.task_id,
+            board_id: board_id,
+          };
+
+          updateTaskStatus(payload);
+
+          console.log("THIS IS THE PAYLOAD", payload);
+        }
+      });
+
       newList[targetItem.index].tasks.splice(
         targetItem.i,
         0,
@@ -290,8 +308,6 @@ export default function Board() {
       dragTask.current = targetItem;
     }
   };
-
-  console.log("CURRENTTT", dragTask.current);
 
   const getStyles = (params) => {
     const taskBeingDragged = dragTask.current;
@@ -531,38 +547,39 @@ export default function Board() {
   console.log("dragging task", dragging);
   console.log("status node", dragStatusNode.current);
 
-  const handleStatusDragStart = (e, params) => {
-    console.log("status being dragged", params.index);
+  // const handleStatusDragStart = (e, params) => {
+  //   // console.log("status being dragged", params.index);
 
-    dragStatusNode.current = e.target;
-    dragStatusNode.current.addEventListener("dragend", handleDragStatusEnd);
+  //   dragStatusNode.current = e.target;
 
-    console.log("STATUS DRAGGED FIRED");
-    dragStatus.current = params;
-    if (dragging === true) {
-      setDraggingStatus(false);
-      console.log("draggin false hello");
-    } else {
-      setDraggingStatus(true);
-    }
-  };
+  //   dragStatusNode.current.addEventListener("dragend", handleDragStatusEnd);
 
-  const handleDragStatusEnd = (e) => {
-    console.log("ending drag...");
-    setDraggingStatus(false);
-    dragStatusNode.current.removeEventListener("dragend", handleDragStatusEnd);
-    dragStatus.current = null;
-    dragStatusNode.current = null;
-  };
+  //   console.log("STATUS DRAGGED FIRED");
+  //   dragStatus.current = params;
+  //   if (dragging === true) {
+  //     setDraggingStatus(false);
+  //     console.log("draggin false ");
+  //   } else {
+  //     setDraggingStatus(true);
+  //   }
+  // };
+
+  // const handleDragStatusEnd = async (e) => {
+  //   console.log("ending drag...");
+  //   setDraggingStatus(false);
+  //   dragStatusNode.current.removeEventListener("dragend", handleDragStatusEnd);
+  //   dragStatus.current = null;
+  //   dragStatusNode.current = null;
+  // };
 
   const handleDragStatusEnter = (e, index) => {
     let newList = { ...currentBoardData };
-    console.log("target item index", index);
+    // console.log("target item index", index);
 
-    console.log("status list", newList.statuses);
+    // console.log("status list", newList.statuses);
 
     if (e.target !== dragNode.current) {
-      console.log("TARGET IS NOT THE SAME");
+      // console.log("TARGET IS NOT THE SAME");
       newList.statuses.splice(
         index,
         0,
@@ -576,9 +593,6 @@ export default function Board() {
     setBoardSettingsModal(true);
   };
 
-  // let defaultPic = currentBoardUsers.board.board_name.charAt(1).toUpperCase();
-  // let newDefaultPic = defaultPic.charAt(1).toUpperCase();
-  // console.log("Default pic", defaultPic);
   const closeBoardModal = () => {
     setBoardSettingsModal(false);
     setTimeout(() => {
@@ -1037,7 +1051,7 @@ export default function Board() {
 
           <div className="board-header-right">
             {bellModal && (
-              <div className="bell-modal">
+              <div className="bell-modal" ref={ref}>
                 <div className="bell-modal-header">
                   <span>Notifications</span>
                 </div>
@@ -1158,22 +1172,22 @@ export default function Board() {
             {currentBoardData.statuses.map((status, index) => (
               <div
                 draggable
-                onDragStart={(e) => {
-                  handleStatusDragStart(e, { status, index });
-                }}
+                // onDragStart={(e) => {
+                //   handleStatusDragStart(e, { status, index });
+                // }}
                 className="status-container"
                 onDragEnter={
                   dragging && !status.tasks.length
-                    ? (e) => handleDragEnter(e, { index, i: 0 })
+                    ? (e) => handleDragEnter(e, { status, index, i: 0 })
                     : null
                 }
-                onDragEnter={
-                  draggingStatus
-                    ? (e) => handleDragStatusEnter(e, index)
-                    : dragging && !status.tasks.length
-                    ? (e) => handleDragEnter(e, { index, i: 0 })
-                    : null
-                }
+                // onDragEnter={
+                //   draggingStatus
+                //     ? (e) => handleDragStatusEnter(e, index)
+                //     : dragging && !status.tasks.length
+                //     ? (e) => handleDragEnter(e, { index, i: 0 })
+                //     : null
+                // }
                 // onDragEnter={() => {
                 //   if (dragging === true && !status.tasks.length)
                 //     return (e) => handleDragEnter(e, { index, i: 0 });
@@ -1267,12 +1281,17 @@ export default function Board() {
                         <div
                           draggable
                           onDragStart={(e) => {
-                            handleDragStart(e, { index, i });
+                            handleDragStart(e, { index, i, task });
                           }}
                           onDragEnter={
                             dragging
                               ? (e) => {
-                                  handleDragEnter(e, { index, i });
+                                  handleDragEnter(e, {
+                                    status,
+                                    task,
+                                    index,
+                                    i,
+                                  });
                                 }
                               : null
                           }

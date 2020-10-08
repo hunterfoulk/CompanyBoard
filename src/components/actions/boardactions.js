@@ -479,8 +479,27 @@ const useBoards = () => {
       .catch((error) => console.error("videos not fetched succesfully", error));
   };
 
+  const updateTaskStatus = async (payload) => {
+    console.log("payload", payload);
+    let board_id = payload.board_id;
+    console.log(payload);
+
+    axios
+      .post(
+        `http://localhost:9000/.netlify/functions/server/companyboard/updatetaskstatus`,
+        payload
+      )
+      .then(async (res) => {
+        console.log("task status changed data ", res.data);
+        // getCurrentBoard(board_id);
+        // getCurrentBoardStatuses(board_id);
+      })
+      .catch((error) => console.error("videos not fetched succesfully", error));
+  };
+
   return {
     getJoinedBoards,
+    updateTaskStatus,
     getCurrentBoard,
     createNewStatus,
     getCurrentBoardStatuses,
