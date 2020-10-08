@@ -18,19 +18,15 @@ import Sidebar from "./components/sidebar/sidebar";
 import useBoards from "./components/actions/boardactions";
 import { Modal } from "godspeed";
 import SearchPage from "./pages/search/searchpage";
+import useUpdate from "./components/actions/update";
+import { Link, useHistory } from "react-router-dom";
 
 const App = () => {
   const [
-    {
-      auth,
-      components,
-      createdBoards,
-      joinedBoards,
-      currentBoardUsers,
-      currentBoardData,
-    },
+    { auth, components, joinedBoards, currentBoardUsers, currentBoardData },
     dispatch,
   ] = useStateValue();
+  const { updateProfile } = useUpdate();
   const { createBoard } = useBoards();
   const { getMyBoards, getJoinedBoards, filterBoardData } = useBoards();
   const [createModal, setCreateModal] = useState(false);
@@ -38,11 +34,15 @@ const App = () => {
   const [picFile, setPicFile] = useState(null);
   const [category, setCategory] = useState("Software");
   const [boardName, setBoardName] = useState("");
+  const [profileModal, setProfileModal] = useState(false);
+  const [username, setUsername] = useState(auth.user.username);
+  const [email, setEmail] = useState(auth.user.email);
+  const [password, setPassword] = useState(auth.user.password);
+  const history = useHistory();
 
-  useEffect(() => {
-    // getMyBoards(user_id);
-    getJoinedBoards(user_id);
-  }, []);
+  // useEffect(() => {
+  //   getJoinedBoards(user_id);
+  // }, []);
 
   const user_id = auth.user.user_id;
 
@@ -74,7 +74,7 @@ const App = () => {
     let payload = {
       user_id: auth.user.user_id,
       category: category,
-      boardName: boardName,
+      boardName: username,
       picFile: picFile,
     };
 
@@ -85,10 +85,113 @@ const App = () => {
     setCreateModal(false);
   };
 
+  const handleUpdateProfile = async (e) => {
+    e.preventDefault();
+    let payload = {
+      user_id: auth.user.user_id,
+      username: username,
+      email: email,
+      picFile: picFile,
+      password: password,
+    };
+
+    await updateProfile(payload);
+  };
+
+  const closeProfile = () => {
+    setProfileModal(false);
+    setTimeout(() => {
+      setPlaceHolder(false);
+    }, 300);
+  };
+
+  const handleLogout = () => {
+    localStorage.clear();
+
+    dispatch({
+      type: "logout",
+    });
+    window.location.href = "/";
+  };
   return (
     <>
       <Router>
         <div className="app-container">
+          <Modal
+            className="profile-modal"
+            onClick={() => closeProfile()}
+            open={profileModal}
+            padding="0px"
+          >
+            <div className="profile-modal-header">
+              <span>My Account</span>
+            </div>
+            <div className="profile-modal-wrapper">
+              <div className="wrapper-left">
+                <div className="image-holder">
+                  <label htmlFor="profile-pic-change">
+                    <AiFillPlusCircle className="create-plus" />
+                    <img
+                      src={
+                        placeholderPic ? placeholderPic : auth.user.profilepic
+                      }
+                    />
+                  </label>
+                  <input
+                    id="profile-pic-change"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleEditProfilePic}
+                    style={{ display: "none" }}
+                  />
+                </div>
+              </div>
+              <div className="wrapper-right">
+                <form>
+                  <label>Name</label>
+                  <input
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                  />
+                  <label>Email</label>
+                  <input
+                    type="text"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                  <label>Password</label>
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </form>
+              </div>
+            </div>
+            <div className="profile-modal-footer">
+              <div className="delete-account-container">
+                <button onClick={handleLogout} className="logout-button">
+                  Log out
+                </button>
+                <button>Delete Account</button>
+              </div>
+              <div className="save-container">
+                <button
+                  className="cancel-button"
+                  onClick={() => closeProfile()}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={(e) => handleUpdateProfile(e)}
+                  className="save-button"
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          </Modal>
           <Modal
             className="create-modal"
             onClick={() => handleClose()}
@@ -177,6 +280,7 @@ const App = () => {
               </>
             )}
           ></Route>
+
           {/* <Navbar /> */}
           <div className="components-container">
             <div className="components-container-left">
@@ -190,7 +294,11 @@ const App = () => {
                     <FiPlus />
                   </span>
                 </div>
-                <img className="profile-pic" src={auth.user.profilepic} />
+                <img
+                  className="profile-pic"
+                  src={auth.user.profilepic}
+                  onClick={() => setProfileModal(true)}
+                />
               </div>
             </div>
             <div className="components-container-right">

@@ -46,6 +46,11 @@ const initialState = {
     members: [],
   },
 
+  boardRequests: {
+    isFetching: true,
+    requests: [],
+  },
+
   members: {
     name: "Members",
     label: "Members",
@@ -140,6 +145,13 @@ const reducer = (state, action) => {
         ...state,
         popupMembers: {},
       };
+
+    case "BOARD_REQUESTS":
+      return {
+        ...state,
+        boardRequests: action.boardRequests,
+      };
+
     case "CURRENT_BOARD_STATUSES":
       return {
         ...state,
@@ -150,6 +162,15 @@ const reducer = (state, action) => {
       return {
         ...state,
         currentTaskData: action.currentTaskData,
+      };
+    case "FILTER_BOARD_REQUESTS":
+      return {
+        ...state,
+        boardRequests: {
+          requests: state.boardRequests.requests.filter(
+            (request) => request.user_id !== action.user_id
+          ),
+        },
       };
     case "DELETE_TASK":
       return {

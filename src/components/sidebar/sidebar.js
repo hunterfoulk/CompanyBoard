@@ -19,7 +19,6 @@ export default function Sidebar() {
   const user_id = auth.user.user_id;
 
   useEffect(() => {
-    getMyBoards(user_id);
     getJoinedBoards(user_id);
   }, []);
 

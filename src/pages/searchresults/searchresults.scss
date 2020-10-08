@@ -6,11 +6,11 @@
   height: fit-content;
   //   padding: 30px 0px;
   //   overflow-y: scroll;
-  //   background-color: #393b3d;
+  background-color: #53535360;
   //   background-color: #363e59;
   //   margin-top: 20px;
-  background: linear-gradient(transparent 100px, #363e59 300px),
-    url(../../images/starry-sky.png) center top/auto 450px repeat-x;
+  //   background: linear-gradient(transparent 100px, #363e59 300px),
+  //     url(../../images/starry-sky.png) center top/auto 450px repeat-x;
   flex: 1;
   padding: 20px 135.5px;
   .results-header {
@@ -39,31 +39,74 @@
       //   background-color: #242732;
       min-width: 27.3333%;
       max-width: 27.3333%;
-      height: 400px;
+      height: fit-content;
       //   height: fit-content;
       border-radius: 4px;
       //   margin-right: 55px;
       margin: 20px;
       //   padding: 5px 5px;
-      background-color: #24262e93;
+      // background-color: #24262e93;
       //   background-color: #22242960;
-
+      .result-users-header {
+        display: flex;
+        justify-content: flex-end;
+        width: 100%;
+        // height: 25px;
+        // background-color: red;
+        .left {
+          width: 50%;
+          // background-color: Red;
+        }
+        .right {
+          display: flex;
+          justify-content: flex-end;
+          width: 50%;
+          // background-color: green;
+          background-color: rgba(25, 25, 27, 0.678);
+          box-shadow: rgba(0, 0, 0, 0.145) 0 0 6px;
+          padding: 4px;
+          .members-container {
+            display: flex;
+            width: 80px;
+            height: 20px;
+            background-color: #7288da;
+            border-radius: 3px;
+            .members {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              width: 20%;
+              background-color: #4a598d;
+              color: white;
+              height: 100%;
+            }
+            .online {
+              // background-color: #7288da;
+              width: 80%;
+              color: white;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 13px;
+            }
+          }
+        }
+      }
       .search-result-header {
         display: flex;
-        background-color: rgba(34, 34, 39, 0.808);
+
+        background-color: rgb(25, 25, 27);
         width: 100%;
         // background-color: #202020d5;
         // box-shadow: 0 -5px 5px -5px #242424;
-        box-shadow: rgba(0, 0, 0, 0.145) 0 0 6px;
-        border-top-right-radius: 3px;
-        border-top-left-radius: 3px;
+        // box-shadow: rgba(0, 0, 0, 0.145) 0 0 6px;
+        // border-top-right-radius: 3px;
+        // border-top-left-radius: 3px;
 
         height: 55px;
         .result-header-left {
           display: flex;
           width: 15%;
-          //   background-color: Red;
-          //   background-color: grey;
           align-items: center;
           img {
             height: 100%;
@@ -101,6 +144,9 @@
         // background-color: #29292960;
         color: white;
         padding: 5px 20px;
+        flex-direction: column;
+        background-color: #22242960;
+
         .label-container {
           display: flex;
           width: 100%;
@@ -129,10 +175,7 @@
       display: flex;
       justify-content: center;
       width: 100%;
-      //   background-color: #29292960;
-      //   padding: 10px;
-      //   background-color: #2f3341be;
-      //   padding: 10px;
+      background-color: #22242960;
 
       button {
         width: 90%;

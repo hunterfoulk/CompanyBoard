@@ -67,12 +67,12 @@ const useSearch = () => {
     });
   };
 
-  const joinBoard = async (payload) => {
+  const requestJoin = async (payload) => {
     let searchTerm = payload.searchTerm;
 
     await axios
       .post(
-        `http://localhost:9000/.netlify/functions/server/companyboard/joinboard`,
+        `http://localhost:9000/.netlify/functions/server/companyboard/requestjoin`,
         payload
       )
       .then((res) => {
@@ -84,6 +84,6 @@ const useSearch = () => {
       });
   };
 
-  return { handleSearch, joinBoard };
+  return { handleSearch, requestJoin };
 };
 export default useSearch;

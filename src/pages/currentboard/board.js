@@ -19,6 +19,7 @@ import { FaRegComment } from "react-icons/fa";
 import { FaRegWindowMaximize } from "react-icons/fa";
 import { IoMdSettings } from "react-icons/io";
 import { FiClock } from "react-icons/fi";
+import { FaBell } from "react-icons/fa";
 import { Drawer } from "godspeed";
 import { Modal } from "godspeed";
 import "react-tippy/dist/tippy.css";
@@ -34,7 +35,6 @@ import DeleteTab from "./deletetab";
 
 export default function Board() {
   const {
-    getMyBoards,
     getJoinedBoards,
     getCurrentBoard,
     createNewStatus,
@@ -48,6 +48,8 @@ export default function Board() {
     updateLabel,
     updateTaskMembers,
     changeBackground,
+    getBoardRequests,
+    acceptRequest,
   } = useBoards();
   const [
     {
@@ -66,11 +68,11 @@ export default function Board() {
       dates,
       members,
       labels,
+      boardRequests,
     },
     dispatch,
   ] = useStateValue();
-  const [createClicked, setCreateClicked] = useState(false);
-  const [fixed, setFixed] = useState(false);
+
   const statusName = useInput("");
   const taskName = useInput("");
   const [editDefault, setEditDefault] = useState("");
@@ -79,7 +81,6 @@ export default function Board() {
   const dragNode = useRef();
   const statusIdRef = useRef();
   const [statusNameHolder, setStatusNameHolder] = useState("");
-  const [menuOpen, setMenuOpen] = useState(false);
   const [editModal, setEditModal] = useState(false);
   const [taskEditModal, setTaskEditModal] = useState(false);
   const [titleEdit, setTitleEdit] = useState("");
@@ -100,6 +101,8 @@ export default function Board() {
   const [boardDropDown, setBoardDropDown] = useState(false);
   const [boardSettingsModal, setBoardSettingsModal] = useState(false);
   const [modalTab, setModalTab] = useState("Board Settings");
+  const [bellModal, setBellModal] = useState(false);
+  const [createStatus, setCreateStatus] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -194,7 +197,6 @@ export default function Board() {
   };
 
   const toggle = (status, index) => {
-    setFixed(true);
     let copy = [...currentBoardData.statuses];
 
     copy[index].open = true;
@@ -459,6 +461,7 @@ export default function Board() {
 
   useEffect(() => {
     getCurrentBoardUsers();
+    getBoardRequests(board_id);
   }, []);
 
   const onWheel = (e) => {
@@ -523,19 +526,6 @@ export default function Board() {
     localStorage.setItem("Labels-checkbox", JSON.stringify(copy));
   };
 
-  const handleBackgroundChange = async (color, i) => {
-    console.log(color.hexcode);
-    let payload = {
-      user_id: auth.user.user_id,
-      board_id: currentBoardUsers.board.board_id,
-      hexcode: color.hexcode,
-    };
-    await changeBackground(payload);
-    setTimeout(() => {
-      getCurrentBoard(board_id, user_id);
-    }, 300);
-  };
-
   //////////status drag///////////
   console.log("dragging status", draggingStatus);
   console.log("dragging task", dragging);
@@ -594,6 +584,24 @@ export default function Board() {
     setTimeout(() => {
       setModalTab("Board Settings");
     }, 300);
+  };
+
+  const handleBoardAccept = async (user_id) => {
+    dispatch({
+      type: "FILTER_BOARD_REQUESTS",
+      user_id: user_id,
+    });
+    let payload = {
+      user_id: user_id,
+      board_id: currentBoardUsers.board.board_id,
+    };
+
+    await acceptRequest(payload);
+  };
+
+  const createStatusOpen = () => {
+    setCreateStatus(true);
+    setBoardDropDown(false);
   };
 
   return (
@@ -932,6 +940,28 @@ export default function Board() {
         </Modal>
 
         <div className="board-header">
+          {createStatus && (
+            <Draggable>
+              <div className="create-status-window">
+                <div className="create-status-header">
+                  <span>Create Status</span>
+                  <MdClose
+                    className="status-close"
+                    onClick={() => setCreateStatus(false)}
+                  />
+                </div>
+                <div className="create-status-input-container">
+                  <label>Name</label>
+                  <input
+                    type="text"
+                    value={statusName.value}
+                    onChange={statusName.onChange}
+                  />
+                  <button onClick={(e) => handleSubmit(e)}>Add</button>
+                </div>
+              </div>
+            </Draggable>
+          )}
           <div className="board-header-left">
             {boardDropDown && (
               <div className="board-dropdown">
@@ -944,16 +974,17 @@ export default function Board() {
                       ))}
                   </div>
                 </div>
+
                 {currentBoardUsers.board.creator === auth.user.user_id ? (
                   <>
-                    <div className="dropdown-item">
+                    <div
+                      className="dropdown-item"
+                      onClick={() => createStatusOpen()}
+                    >
                       <span>Create status</span>
                       <AiFillPlusCircle style={{ marginRight: "5px" }} />
                     </div>
-                    <div className="dropdown-item">
-                      <span>Invite member</span>
-                      <MdPersonAdd style={{ marginRight: "5px" }} />
-                    </div>
+
                     <div
                       className="dropdown-item"
                       onClick={() => settingsModalHandler()}
@@ -1005,6 +1036,51 @@ export default function Board() {
           </div>
 
           <div className="board-header-right">
+            {bellModal && (
+              <div className="bell-modal">
+                <div className="bell-modal-header">
+                  <span>Notifications</span>
+                </div>
+                <div className="notifications-container">
+                  {boardRequests.requests.length < 1 ? (
+                    <span style={{ textAlign: "center" }}>
+                      No New Notifications
+                    </span>
+                  ) : null}
+                  {boardRequests.requests.map((request) => (
+                    <div className="notification-request">
+                      <div className="notification-content">
+                        <div className="notification-left">
+                          <img src={request.profilepic} />
+                        </div>
+                        <div className="notification-right">
+                          <span className="username">{request.username}</span>
+                          <span className="email">{request.email}</span>
+                        </div>
+                      </div>
+                      <div className="notification-button-container">
+                        <button
+                          className="accept-button"
+                          onClick={() => handleBoardAccept(request.user_id)}
+                        >
+                          Accept
+                        </button>
+                        <button className="decline-button">Decline</button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            {currentBoardUsers.board.creator === auth.user.user_id ? (
+              <span
+                className="bell-icon"
+                onClick={() => setBellModal(!bellModal)}
+              >
+                <FaBell />
+              </span>
+            ) : null}
+
             <span
               className="settings-icon"
               onClick={() => setSettingsPopup(true)}
