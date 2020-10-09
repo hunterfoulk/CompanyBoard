@@ -20,6 +20,7 @@ import { FaRegWindowMaximize } from "react-icons/fa";
 import { IoMdSettings } from "react-icons/io";
 import { FiClock } from "react-icons/fi";
 import { FaBell } from "react-icons/fa";
+import { MdFormatAlignLeft } from "react-icons/md";
 import { Drawer } from "godspeed";
 import { Modal } from "godspeed";
 import "react-tippy/dist/tippy.css";
@@ -51,6 +52,7 @@ export default function Board() {
     getBoardRequests,
     acceptRequest,
     updateTaskStatus,
+    submitNewComment,
   } = useBoards();
   const [
     {
@@ -103,6 +105,7 @@ export default function Board() {
   const [modalTab, setModalTab] = useState("Board Settings");
   const [bellModal, setBellModal] = useState(false);
   const [createStatus, setCreateStatus] = useState(false);
+  const newComment = useInput("");
   const ref = useRef();
   useClickOutside(ref, () => setBellModal(false));
 
@@ -286,7 +289,7 @@ export default function Board() {
     let newList = [...currentBoardData.statuses];
     taskRef = dragTask.current;
     if (e.target !== dragNode.current) {
-      newList[targetItem.index].tasks.map((task, i) => {
+      newList[targetItem.index].tasks.map(async (task, i) => {
         if (i === targetItem.i) {
           let payload = {
             status_id: parseInt(targetItem.status.status_id),
@@ -294,7 +297,7 @@ export default function Board() {
             board_id: board_id,
           };
 
-          updateTaskStatus(payload);
+          await updateTaskStatus(payload);
 
           console.log("THIS IS THE PAYLOAD", payload);
         }
@@ -428,7 +431,7 @@ export default function Board() {
   };
 
   const handleAddMembers = async (user_id, i) => {
-    let copy = [...setPopupFilterArray];
+    let copy = [...popupFilterArray];
     let task_id = currentTaskData.task.task_id;
     let newCopy = copy.filter((user) => user.user_id !== user_id);
     console.log("copy", newCopy);
@@ -547,39 +550,10 @@ export default function Board() {
   console.log("dragging task", dragging);
   console.log("status node", dragStatusNode.current);
 
-  // const handleStatusDragStart = (e, params) => {
-  //   // console.log("status being dragged", params.index);
-
-  //   dragStatusNode.current = e.target;
-
-  //   dragStatusNode.current.addEventListener("dragend", handleDragStatusEnd);
-
-  //   console.log("STATUS DRAGGED FIRED");
-  //   dragStatus.current = params;
-  //   if (dragging === true) {
-  //     setDraggingStatus(false);
-  //     console.log("draggin false ");
-  //   } else {
-  //     setDraggingStatus(true);
-  //   }
-  // };
-
-  // const handleDragStatusEnd = async (e) => {
-  //   console.log("ending drag...");
-  //   setDraggingStatus(false);
-  //   dragStatusNode.current.removeEventListener("dragend", handleDragStatusEnd);
-  //   dragStatus.current = null;
-  //   dragStatusNode.current = null;
-  // };
-
   const handleDragStatusEnter = (e, index) => {
     let newList = { ...currentBoardData };
-    // console.log("target item index", index);
-
-    // console.log("status list", newList.statuses);
 
     if (e.target !== dragNode.current) {
-      // console.log("TARGET IS NOT THE SAME");
       newList.statuses.splice(
         index,
         0,
@@ -616,6 +590,20 @@ export default function Board() {
   const createStatusOpen = () => {
     setCreateStatus(true);
     setBoardDropDown(false);
+  };
+
+  const handleComment = async (e) => {
+    e.preventDefault();
+    let task_id = currentTaskData.task.task_id;
+
+    let payload = {
+      task_id: task_id,
+      comment: newComment.value,
+      user_id: auth.user.user_id,
+    };
+
+    await submitNewComment(payload);
+    newComment.setValue("");
   };
 
   return (
@@ -782,9 +770,39 @@ export default function Board() {
                     <img src={auth.user.profilepic} />
                   </div>
                   <div className="comment-input-container">
-                    <input />
-                    <button>Save</button>
+                    <form onSubmit={(e) => handleComment(e)}>
+                      <input
+                        type="text"
+                        value={newComment.value}
+                        onChange={newComment.onChange}
+                      />
+                      <button type="submit">Submit</button>
+                    </form>
                   </div>
+                </div>
+                <div className="comments-container">
+                  <div className="comments-container-header">
+                    <span className="comments-icon">
+                      <MdFormatAlignLeft />
+                    </span>
+                    <span className="comments-header">Comments</span>
+                  </div>
+                  {currentTaskData.task.hasOwnProperty("comments") &&
+                    currentTaskData.task.comments.map((comment) => (
+                      <div className="comment">
+                        <div className="comment-left">
+                          <img src={comment.profilepic} />
+                        </div>
+                        <div className="comment-right">
+                          <span className="commenter-name">
+                            {comment.username}
+                          </span>
+                          <div className="comment-container">
+                            <span>{comment.comment}</span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                 </div>
               </div>
             </div>

@@ -497,8 +497,25 @@ const useBoards = () => {
       .catch((error) => console.error("videos not fetched succesfully", error));
   };
 
+  const submitNewComment = async (payload) => {
+    console.log("payload", payload);
+    let task_id = payload.task_id;
+
+    axios
+      .post(
+        `http://localhost:9000/.netlify/functions/server/companyboard/newComment`,
+        payload
+      )
+      .then(async (res) => {
+        console.log("new comment data ", res.data);
+        await currentTask(task_id);
+      })
+      .catch((error) => console.error("videos not fetched succesfully", error));
+  };
+
   return {
     getJoinedBoards,
+    submitNewComment,
     updateTaskStatus,
     getCurrentBoard,
     createNewStatus,
