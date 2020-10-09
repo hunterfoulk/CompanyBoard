@@ -5,7 +5,9 @@
   background-color: #393b3d;
   width: 100%;
   // height: calc(100vh - 48px);
-  height: 100vh;
+  // height: 100vh;
+  // height: 100%;
+  flex: 1;
   // overflow: hidden;
   // background-color: rgb(235, 90, 70);
 
@@ -703,6 +705,8 @@
       }
     }
     .board-header-left {
+      // background-color: Red;
+
       .board-dropdown {
         display: flex;
         flex-direction: column;
@@ -834,6 +838,24 @@
       align-items: center;
       // background-color: green;
       width: 50%;
+      .board-header-members {
+        display: flex;
+        align-items: center;
+        margin-left: 60px;
+        // background-color: yellow;
+        margin-right: 50px;
+        span {
+          margin-right: 8px;
+          color: grey;
+        }
+        img {
+          margin: 0px;
+          height: 30px;
+          width: 30px;
+          border-radius: 50%;
+          position: relative;
+        }
+      }
       .bell-modal {
         display: flex;
         position: absolute;
@@ -844,6 +866,7 @@
         right: 150px;
         top: 50px;
         z-index: 100;
+
         .bell-modal-header {
           display: flex;
           flex-direction: column;

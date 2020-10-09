@@ -53,6 +53,7 @@ export default function Board() {
     acceptRequest,
     updateTaskStatus,
     submitNewComment,
+    deleteStatus,
   } = useBoards();
   const [
     {
@@ -606,6 +607,31 @@ export default function Board() {
     newComment.setValue("");
   };
 
+  const handleStatusDelete = async () => {
+    let payload = {
+      status_id: statusIdRef.current,
+      board_id: board_id,
+    };
+
+    await deleteStatus(payload);
+    setEditModal(false);
+  };
+
+  useEffect(() => {
+    let newEvent = document.getElementById("task");
+    if (newEvent) {
+      newEvent.addEventListener(
+        "dragstart",
+        function (e) {
+          var img = document.createElement("img");
+          this.style.backgroundColor = "red";
+          e.dataTransfer.setDragImage(img, 0, 0);
+        },
+        false
+      );
+    }
+  }, [dragging]);
+
   return (
     <>
       <div className="current-board-main">
@@ -964,7 +990,10 @@ export default function Board() {
             <button type="submit">Save</button>
           </form>
           <div className="delete-status-container">
-            <button className="delete-status-button">
+            <button
+              className="delete-status-button"
+              onClick={() => handleStatusDelete()}
+            >
               <MdDelete style={{ position: "relative", top: "2px" }} /> Delete
               Status
             </button>
@@ -1031,15 +1060,6 @@ export default function Board() {
                   </>
                 ) : (
                   <>
-                    <div
-                      className="dropdown-item"
-                      onClick={() => setBoardDropDown(false)}
-                    >
-                      <span>Create status</span>
-                    </div>
-                    <div className="dropdown-item">
-                      <span>Invite member</span>
-                    </div>
                     <div className="dropdown-item" style={{ color: "red" }}>
                       <span>Leave board</span>
                     </div>
@@ -1068,6 +1088,20 @@ export default function Board() {
           </div>
 
           <div className="board-header-right">
+            <div className="board-header-members">
+              <span>Members |</span>
+              {popupMembers.members.map((user) => (
+                <Tooltip
+                  trigger="mouseenter"
+                  className="tooltip"
+                  position="bottom"
+                  size="small"
+                  title={user.username}
+                >
+                  <img src={user.profilepic} />
+                </Tooltip>
+              ))}
+            </div>
             {bellModal && (
               <div className="bell-modal" ref={ref}>
                 <div className="bell-modal-header">

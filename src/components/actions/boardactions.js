@@ -513,8 +513,25 @@ const useBoards = () => {
       .catch((error) => console.error("videos not fetched succesfully", error));
   };
 
+  const deleteStatus = async (payload) => {
+    console.log("payload", payload);
+    let board_id = payload.board_id;
+    axios
+      .post(
+        `http://localhost:9000/.netlify/functions/server/companyboard/deleteStatus`,
+        payload
+      )
+      .then(async (res) => {
+        console.log("deleted status data ", res.data);
+        await getCurrentBoard(board_id);
+        await getCurrentBoardStatuses(board_id);
+      })
+      .catch((error) => console.error("videos not fetched succesfully", error));
+  };
+
   return {
     getJoinedBoards,
+    deleteStatus,
     submitNewComment,
     updateTaskStatus,
     getCurrentBoard,
