@@ -1,34 +1,57 @@
 @import url("https://fonts.googleapis.com/css2?family=Commissioner&display=swap");
-.search-results-main {
+
+.category-main {
   display: flex;
   flex-direction: column;
   width: 100%;
-  // min-height: 100vh;
-  height: 100%;
-  // height: fit-content;
-
+  min-height: 100vh;
+  height: fit-content;
   // background-color: #53535360;
   background: linear-gradient(transparent 100px, #2b2a2a 300px),
     url(../../images/newstars2.png) center top/auto 450px repeat-x;
 
   flex: 1;
-  padding: 0px 135.5px;
-  .results-header {
+  padding: 20px 135.5px;
+
+  .category-header {
+    margin-top: 30px;
     display: flex;
-    justify-content: center;
-    // background-color: green;
-    margin-top: 50px;
-    h1 {
-      color: #e6e6e6;
-      font-size: 35px;
+    flex-direction: column;
+    align-items: center;
+    color: #e6e6e6;
+    // font-size: 20px;
+    // font-weight: bold;
+    margin-bottom: 30px;
+    font-family: "Commissioner", sans-serif;
+
+    .first-span {
+      font-size: 40px;
+      margin-bottom: 5px;
       font-weight: bold;
-      // font-family: Uni Sans;
-      font-family: "Commissioner", sans-serif;
+    }
+    .second-span {
+      font-size: 38px;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+    .third-span {
+      font-size: 18px;
+      color: #808080;
+    }
+    .fourth-span {
+      font-family: Dosis;
+      text-transform: uppercase;
+      background: #7288da;
+      color: #e6e6e6;
+      font-size: 12px;
+      padding: 5px;
+      border-radius: 3px;
     }
   }
   .search-results-container {
     display: flex;
     justify-content: center;
+    // background-color: yellow;
     margin-top: 35px;
     flex-wrap: wrap;
     height: 100%;

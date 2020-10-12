@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
+// import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import axios from "axios";
 import "./board.scss";
+import { Link, useHistory } from "react-router-dom";
 import useBoards from "../../components/actions/boardactions";
 import { useStateValue } from "../../state";
 import { FiPlus } from "react-icons/fi";
@@ -33,6 +35,7 @@ import SettingsTab from "./settingstab";
 import MembersTab from "./memberstab";
 import DeleteTab from "./deletetab";
 import useClickOutside from "../../components/hooks/useClickOutside";
+import uuid from "uuid/v4";
 
 export default function Board() {
   const {
@@ -54,21 +57,16 @@ export default function Board() {
     updateTaskStatus,
     submitNewComment,
     deleteStatus,
+    leaveBoard,
+    deleteBoard,
   } = useBoards();
   const [
     {
       auth,
-      components,
-      createdBoards,
-      joinedBoards,
       currentBoardUsers,
       currentBoardData,
       currentTaskData,
       popupMembers,
-      taskMembers,
-      checkBoxes,
-      membersBox,
-      labelsBox,
       dates,
       members,
       labels,
@@ -98,9 +96,6 @@ export default function Board() {
   const [popupFilterArray, setPopupFilterArray] = useState([]);
   const [settingsPopup, setSettingsPopup] = useState(false);
   const [draggingWindow, setDraggingWindow] = useState(false);
-  const dragStatus = useRef();
-  const dragStatusNode = useRef();
-  const [draggingStatus, setDraggingStatus] = useState(false);
   const [boardDropDown, setBoardDropDown] = useState(false);
   const [boardSettingsModal, setBoardSettingsModal] = useState(false);
   const [modalTab, setModalTab] = useState("Board Settings");
@@ -109,6 +104,7 @@ export default function Board() {
   const newComment = useInput("");
   const ref = useRef();
   useClickOutside(ref, () => setBellModal(false));
+  const history = useHistory();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -270,10 +266,6 @@ export default function Board() {
       setDragging(true);
     }, 0);
   };
-
-  useEffect(() => {
-    setDraggingStatus(false);
-  }, [dragging]);
 
   const handleDragEnd = async (e) => {
     console.log("ending drag...");
@@ -459,6 +451,7 @@ export default function Board() {
               (item) => item.user_id !== user.user_id
             );
             setPopupFilterArray(newMembers);
+            console.log("POPUP ARRAY", popupFilterArray);
           }
         });
       });
@@ -547,22 +540,7 @@ export default function Board() {
   };
 
   //////////status drag///////////
-  console.log("dragging status", draggingStatus);
-  console.log("dragging task", dragging);
-  console.log("status node", dragStatusNode.current);
 
-  const handleDragStatusEnter = (e, index) => {
-    let newList = { ...currentBoardData };
-
-    if (e.target !== dragNode.current) {
-      newList.statuses.splice(
-        index,
-        0,
-        newList.statuses.splice(dragStatus.current.index, 1)[0]
-      );
-      dragTask.current = index;
-    }
-  };
   const settingsModalHandler = () => {
     setBoardDropDown(false);
     setBoardSettingsModal(true);
@@ -617,20 +595,22 @@ export default function Board() {
     setEditModal(false);
   };
 
-  useEffect(() => {
-    let newEvent = document.getElementById("task");
-    if (newEvent) {
-      newEvent.addEventListener(
-        "dragstart",
-        function (e) {
-          var img = document.createElement("img");
-          this.style.backgroundColor = "red";
-          e.dataTransfer.setDragImage(img, 0, 0);
-        },
-        false
-      );
-    }
-  }, [dragging]);
+  const handleLeaveBoard = async () => {
+    let payload = {
+      user_id: auth.user.user_id,
+      board_id: board_id,
+    };
+    await leaveBoard(payload);
+    history.push("/search");
+  };
+
+  const handleDeleteBoard = async () => {
+    let payload = {
+      user_id: auth.user.user_id,
+      board_id: board_id,
+    };
+    await deleteBoard(payload);
+  };
 
   return (
     <>
@@ -683,7 +663,12 @@ export default function Board() {
               </div>
               {modalTab === "Board Settings" && <SettingsTab />}
               {modalTab === "Members Settings" && <MembersTab />}
-              {modalTab === "Delete Settings" && <DeleteTab />}
+              {modalTab === "Delete Settings" && (
+                <DeleteTab
+                  board_id={board_id}
+                  setBoardSettingsModal={setBoardSettingsModal}
+                />
+              )}
             </div>
           </div>
         </Modal>
@@ -1060,7 +1045,11 @@ export default function Board() {
                   </>
                 ) : (
                   <>
-                    <div className="dropdown-item" style={{ color: "red" }}>
+                    <div
+                      className="dropdown-item"
+                      style={{ color: "red" }}
+                      onClick={() => handleLeaveBoard()}
+                    >
                       <span>Leave board</span>
                     </div>
                   </>
@@ -1224,28 +1213,12 @@ export default function Board() {
             {currentBoardData.statuses.map((status, index) => (
               <div
                 draggable
-                // onDragStart={(e) => {
-                //   handleStatusDragStart(e, { status, index });
-                // }}
                 className="status-container"
                 onDragEnter={
                   dragging && !status.tasks.length
                     ? (e) => handleDragEnter(e, { status, index, i: 0 })
                     : null
                 }
-                // onDragEnter={
-                //   draggingStatus
-                //     ? (e) => handleDragStatusEnter(e, index)
-                //     : dragging && !status.tasks.length
-                //     ? (e) => handleDragEnter(e, { index, i: 0 })
-                //     : null
-                // }
-                // onDragEnter={() => {
-                //   if (dragging === true && !status.tasks.length)
-                //     return (e) => handleDragEnter(e, { index, i: 0 });
-                //   else if (draggingStatus === true)
-                //     return (e) => handleDragStatusEnter(e, index);
-                // }}
               >
                 {status.editer ? (
                   <>

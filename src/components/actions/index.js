@@ -33,7 +33,7 @@ const useLogin = () => {
             user: user,
           },
         });
-        history.push("/home");
+        history.push("/search");
       })
 
       .catch((error) => {

@@ -2,14 +2,14 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  background-color: #393b3d;
+  // background-color: red;
   width: 100%;
   // height: calc(100vh - 48px);
   // height: 100vh;
   // height: 100%;
-  flex: 1;
-  // overflow: hidden;
-  // background-color: rgb(235, 90, 70);
+  // flex: 1;
+  // overflow-x: scroll;
+  background-color: #424344;
 
   .edit-task-modal {
     width: 700px;
@@ -648,7 +648,7 @@
     height: 50px;
     width: 100%;
     // padding: 10px 10px;
-    background-color: #393b3d;
+    background-color: #343638;
     color: white;
     font-family: jaf-facitweb, Helvetica Neue, Arial, sans-serif;
     border-bottom: 1px solid rgb(49, 49, 49);
@@ -720,7 +720,7 @@
         // z-index: 500;
         // top: 100%;
         top: 6%;
-        left: 5.2%;
+        left: 6%;
         // margin-top: 30%;
         margin-right: 20%;
         padding: 10px 5px;
@@ -987,7 +987,7 @@
         }
       }
       .bell-icon {
-        margin-right: 18px;
+        margin-right: 40px;
         margin-top: 4px;
         cursor: pointer;
       }

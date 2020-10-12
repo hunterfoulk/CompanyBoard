@@ -1,16 +1,16 @@
 @import url("https://fonts.googleapis.com/css2?family=Dosis:wght@600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Commissioner&display=swap");
+
 .search-page-main {
   width: 100%;
   flex-direction: column;
-  // background-color: #393b3d;
-  // background-color: #393b3d;
-  background-color: #53535360;
-
+  // background-color: #53535360;
+  padding: 10px 10px 10px 20px;
   // background-color: #363e59;
   display: flex;
-  height: 100vh;
-  // background: linear-gradient(transparent 100px, #363e59 300px),
-  //   url(../../images/starry-sky.png) center top/auto 450px repeat-x;
+  // height: 100vh;
+  background: linear-gradient(transparent 100px, #302f2f 300px),
+    url(../../images/newstars2.png) center top/auto 450px repeat-x;
   .search-header-container {
     display: flex;
     justify-content: center;
@@ -22,7 +22,8 @@
       //   font-family: "Dosis", sans-serif;
       //   letter-spacing: 0.2rem;
       font-weight: 500;
-      color: #7289da;
+      font-family: "Commissioner", sans-serif;
+      color: #e6e6e6;
       font-weight: 600;
     }
   }

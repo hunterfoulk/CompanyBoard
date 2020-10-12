@@ -84,6 +84,31 @@ const useSearch = () => {
       });
   };
 
-  return { handleSearch, requestJoin };
+  const handleFilteredSearch = async (category) => {
+    const queryParams = { params: { category } };
+    console.log("search term", queryParams);
+
+    await axios
+      .get(
+        `http://localhost:9000/.netlify/functions/server/companyboard/filtersearch`,
+        queryParams
+      )
+      .then((res) => {
+        console.log("search response", res.data);
+        const response = res.data;
+        dispatch({
+          type: "SEARCH_RESULTS",
+          searchResults: {
+            results: response,
+            isFetching: false,
+          },
+        });
+      })
+      .catch((error) => {
+        console.log(error, "search term error");
+      });
+  };
+
+  return { handleSearch, requestJoin, handleFilteredSearch };
 };
 export default useSearch;

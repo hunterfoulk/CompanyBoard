@@ -30,6 +30,12 @@ export default function SearchPage() {
     },
   ]);
 
+  const handleFilterSearch = (label) => {
+    let payload = {
+      label: label,
+    };
+  };
+
   return (
     <div className="search-page-main">
       <div className="search-header-container">
@@ -51,7 +57,12 @@ export default function SearchPage() {
       </div>
       <div className="filters-container">
         {filters.map((filter) => (
-          <div className="filter">
+          <div
+            className="filter"
+            onClick={() => {
+              history.push(`/categories/${filter.label}`);
+            }}
+          >
             <span>{filter.label}</span>
           </div>
         ))}

@@ -1,26 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
+import "./categories.scss";
 import useSearch from "../../components/actions/searchactions";
 import { useStateValue } from "../../state";
-import "./searchresults.scss";
 
-export default function Searchresults() {
+export default function Categorysearch() {
   const [{ auth, components, searchResults }, dispatch] = useStateValue();
-  const { handleSearch, requestJoin } = useSearch();
+  const { handleSearch, requestJoin, handleFilteredSearch } = useSearch();
 
-  let searchTerm = window.location.pathname.replace("/searchresults/", "");
-  let newTerm = decodeURIComponent(searchTerm.toUpperCase());
+  let category = window.location.pathname.replace("/categories/", "");
+
+  console.log("categoryyy", category);
   useEffect(() => {
-    handleSearch(searchTerm);
-    console.log("PARSED search term", searchTerm);
-
-    return () => {
-      dispatch({
-        type: "SEARCH_RESULTS",
-        searchResults: {
-          results: [],
-        },
-      });
-    };
+    handleFilteredSearch(category);
   }, []);
 
   const handleBoardJoin = (result) => {
@@ -28,24 +19,22 @@ export default function Searchresults() {
 
     let payload = {
       board_id: board_id,
-      searchTerm: searchTerm,
       user_id: auth.user.user_id,
     };
 
     requestJoin(payload);
   };
 
-  console.log("results", searchResults.results);
   return (
-    <div className="search-results-main">
-      <div className="results-header">
-        <h1>SEARCH RESULTS FOR: {newTerm}</h1>
-      </div>
-      {searchResults.results.length <= 0 && (
-        <span style={{ textAlign: "center", color: "#e6e6e6" }}>
-          No results for {newTerm} 😔
+    <div className="category-main">
+      <div className="category-header">
+        <span className="first-span">Company Boards</span>
+        <span className="second-span">{category}</span>
+        <span className="third-span">
+          Company boards categorized by{" "}
+          <span className="fourth-span">{category}</span>
         </span>
-      )}
+      </div>
 
       <div className="search-results-container">
         {searchResults.results.map((result) => {
