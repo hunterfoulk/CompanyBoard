@@ -5,7 +5,7 @@ import { FaEllipsisV } from "react-icons/fa";
 import useClickOutside from "../../components/hooks/useClickOutside";
 
 export default function Memberstab() {
-  const [{ currentBoardUsers }, dispatch] = useStateValue();
+  const [{ currentBoardUsers, auth }, dispatch] = useStateValue();
   const ref = useRef();
 
   const handleModalHover = (member, i) => {
@@ -26,6 +26,16 @@ export default function Memberstab() {
   const handleModalUnClickMember = (member, i) => {
     console.log("REF HANDLER");
     dispatch({ type: "UNCLICK_MEMBER", memberId: member, memberIndex: i });
+  };
+
+  const handleKickMember = (member, i) => {
+    console.log("REF HANDLER");
+    dispatch({ type: "KICK_MEMBER", memberId: member, memberIndex: i });
+
+    let payload = {
+      user_id: member,
+      board_id: currentBoardUsers.board.board_id,
+    };
   };
 
   return (
@@ -51,9 +61,15 @@ export default function Memberstab() {
 
           {member.clicked && (
             <div className="member-clicked-popup">
-              <div className="members-popup-item-remove">
-                <span>Remove member</span>
-              </div>
+              {auth.user.user_id === member.user_id ? null : (
+                <div
+                  className="members-popup-item-remove"
+                  onClick={() => handleKickMember(member.user_id, i)}
+                >
+                  <span>Remove member</span>
+                </div>
+              )}
+
               <div
                 className="members-popup-item"
                 onClick={() => handleModalUnClickMember(member.user_id, i)}

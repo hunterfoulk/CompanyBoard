@@ -71,7 +71,7 @@ export default function Sidebar() {
     let payload = {
       user_id: auth.user.user_id,
       category: category,
-      boardName: username,
+      boardName: boardName,
       picFile: picFile,
     };
 

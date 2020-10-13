@@ -14,6 +14,7 @@
   .edit-task-modal {
     width: 700px;
     min-height: 300px;
+    max-height: 600px;
     height: fit-content;
     left: 50%;
     top: 10%;
@@ -60,8 +61,8 @@
           display: flex;
           flex-direction: column;
           // background-color: red;
-          min-height: 270px;
-          max-height: 350px;
+          // min-height: 270px;
+          max-height: 270px;
           overflow-y: auto;
           margin-top: 15px;
           .comments-container-header {
@@ -648,7 +649,7 @@
     height: 50px;
     width: 100%;
     // padding: 10px 10px;
-    background-color: #343638;
+    background-color: #2e3031;
     color: white;
     font-family: jaf-facitweb, Helvetica Neue, Arial, sans-serif;
     border-bottom: 1px solid rgb(49, 49, 49);
@@ -720,7 +721,7 @@
         // z-index: 500;
         // top: 100%;
         top: 6%;
-        left: 6%;
+        left: 5.5%;
         // margin-top: 30%;
         margin-right: 20%;
         padding: 10px 5px;
@@ -841,9 +842,11 @@
       .board-header-members {
         display: flex;
         align-items: center;
-        margin-left: 60px;
+        justify-content: flex-end;
+        width: 60%;
+        height: 100%;
         // background-color: yellow;
-        margin-right: 50px;
+        // margin-right: 50px;
         span {
           margin-right: 8px;
           color: grey;
@@ -986,30 +989,51 @@
           }
         }
       }
-      .bell-icon {
-        margin-right: 40px;
-        margin-top: 4px;
-        cursor: pointer;
-      }
-      .bell-icon:hover {
-        color: rgb(182, 182, 182);
-      }
+
       .menu-span {
         margin-right: 5px;
         text-decoration: underline;
         cursor: pointer;
         color: white;
       }
-      .settings-icon {
+      .settings-holder {
         display: flex;
+        // width: 100%;
+        // margin-right: 20px;
+        height: 100%;
+        width: 40%;
+        justify-content: center;
         align-items: center;
-        color: white;
-        font-size: 17px;
-        margin-right: 15px;
-        cursor: pointer;
-      }
-      .settings-icon:hover {
-        text-decoration: underline;
+        // background-color: rgb(141, 87, 143);
+        // background-color: orange;
+        .bell-icon {
+          margin-right: 40px;
+          margin-top: 4px;
+          cursor: pointer;
+          .bell-users-icon {
+            position: absolute;
+            font-size: 12px;
+            // background-color: Red;
+            margin-bottom: 3px;
+            border-radius: 50%;
+          }
+        }
+
+        .bell-icon:hover {
+          color: rgb(182, 182, 182);
+        }
+
+        .settings-icon {
+          display: flex;
+          align-items: center;
+          color: white;
+          font-size: 17px;
+          // margin-right: 15px;
+          cursor: pointer;
+        }
+        .settings-icon:hover {
+          text-decoration: underline;
+        }
       }
     }
   }
@@ -1262,7 +1286,7 @@
           .replace {
             width: 200px;
             height: 200px;
-            background-color: yellow;
+            // background-color: yellow;
           }
           .task {
             display: flex;
@@ -1304,7 +1328,7 @@
               width: 50px;
               height: 6px;
               border-radius: 50px;
-              background-color: green;
+              // background-color: green;
             }
             .task-med-label {
               width: 50px;

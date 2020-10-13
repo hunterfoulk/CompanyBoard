@@ -7,7 +7,9 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: #f9fafc;
+  // background-color: #f9fafc;
+  background: linear-gradient(transparent 100px, #2b2a2a 300px),
+    url(../../images/newstars2.png) center top/auto 450px repeat-x;
   .auth-container {
     padding: 15px 25px;
     display: flex;
@@ -64,15 +66,15 @@
         width: 100%;
         padding: 5px;
         font-size: 18px;
-        background-color: #61bd4f;
-        border: 1px solid #61bd4f;
+        background-color: #7288da;
+        border: 1px solid #7288da;
         color: white;
         font-weight: 600;
         outline: none;
       }
       button:hover {
-        background-color: #53a743;
-        border: 1px solid #53a743;
+        background-color: #6479c5;
+        border: 1px solid #6479c5;
         cursor: pointer;
       }
     }

@@ -180,7 +180,9 @@ const useBoards = () => {
       )
       .then((res) => {
         console.log(res);
-        getJoinedBoards(user_id);
+        setTimeout(() => {
+          getJoinedBoards(user_id);
+        }, 300);
       })
 
       .catch((error) => {
@@ -479,6 +481,20 @@ const useBoards = () => {
       .catch((error) => console.error("videos not fetched succesfully", error));
   };
 
+  const declineRequest = async (payload) => {
+    axios
+      .post(
+        `http://localhost:9000/.netlify/functions/server/companyboard/declinerequest`,
+        payload
+      )
+      .then(async (res) => {
+        console.log("label data ", res.data);
+        // getCurrentBoard(board_id);
+        // getCurrentBoardStatuses(board_id);
+      })
+      .catch((error) => console.error("videos not fetched succesfully", error));
+  };
+
   const updateTaskStatus = async (payload) => {
     console.log("payload", payload);
     let board_id = payload.board_id;
@@ -565,8 +581,25 @@ const useBoards = () => {
       .catch((error) => console.error("videos not fetched succesfully", error));
   };
 
+  const kickMember = async (payload) => {
+    console.log("payload", payload);
+
+    axios
+      .post(
+        `http://localhost:9000/.netlify/functions/server/companyboard/kickMember`,
+        payload
+      )
+      .then((res) => {
+        console.log("board delete", res.data);
+        // await getCurrentBoardStatuses(board_id);
+      })
+      .catch((error) => console.error("videos not fetched succesfully", error));
+  };
+
   return {
     getJoinedBoards,
+    declineRequest,
+    kickMember,
     deleteBoard,
     leaveBoard,
     deleteStatus,

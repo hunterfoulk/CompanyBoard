@@ -18,6 +18,7 @@ export default function Searchresults() {
         type: "SEARCH_RESULTS",
         searchResults: {
           results: [],
+          isFetching: true,
         },
       });
     };

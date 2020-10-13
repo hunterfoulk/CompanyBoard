@@ -44,7 +44,11 @@ export default function SearchPage() {
       <div className="search-input-container">
         <form
           onSubmit={() => {
-            history.push(`/searchresults/${decodeURIComponent(searchTerm)}`);
+            if (searchTerm === "") {
+              return;
+            } else {
+              history.push(`/searchresults/${decodeURIComponent(searchTerm)}`);
+            }
           }}
         >
           <input

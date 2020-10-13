@@ -3,7 +3,8 @@
   width: 5%;
   padding: 5px;
   // background-color: orange;
-  background-color: #0f0f0f60;
+  background-color: #272525;
+  // height: 100vh;
   .boards-container {
     display: flex;
     width: 100%;
@@ -52,8 +53,8 @@
         }
       }
       img {
-        height: 50px;
-        width: 50px;
+        height: 52px;
+        width: 55px;
         border-radius: 50%;
         cursor: pointer;
       }
@@ -265,5 +266,11 @@
         border: 1px solid #697ecc;
       }
     }
+  }
+}
+
+@media (max-width: 900px) {
+  .sidebar {
+    width: 7%;
   }
 }

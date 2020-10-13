@@ -14,10 +14,6 @@ const initialState = {
     profileDrawer: false,
     backdrop: false,
   },
-  createdBoards: {
-    isFetching: true,
-    boards: [],
-  },
 
   joinedBoards: {
     isFetching: true,
@@ -118,11 +114,7 @@ const reducer = (state, action) => {
         ...state,
         components: action.components,
       };
-    case "MY_BOARDS":
-      return {
-        ...state,
-        createdBoards: action.createdBoards,
-      };
+
     case "JOINED_BOARDS":
       return {
         ...state,
@@ -166,12 +158,17 @@ const reducer = (state, action) => {
     case "FILTER_BOARD_REQUESTS":
       return {
         ...state,
-        boardRequests: {
-          requests: state.boardRequests.requests.filter(
-            (request) => request.user_id !== action.user_id
-          ),
+        currentBoardUsers: {
+          ...state.currentBoardUsers,
+          board: {
+            ...state.currentBoardUsers.board,
+            requests: state.boardRequests.requests.filter(
+              (request) => request.user_id !== action.user_id
+            ),
+          },
         },
       };
+
     case "DELETE_TASK":
       return {
         ...state,
@@ -243,6 +240,19 @@ const reducer = (state, action) => {
               member.user_id === action.memberId
                 ? { ...member, clicked: false }
                 : member
+            ),
+          },
+        },
+      };
+    case "KICK_MEMBER":
+      return {
+        ...state,
+        currentBoardUsers: {
+          ...state.currentBoardUsers,
+          board: {
+            ...state.currentBoardUsers.board,
+            members: state.currentBoardUsers.board.members.filter(
+              (member, idx) => member.user_id !== action.memberId
             ),
           },
         },

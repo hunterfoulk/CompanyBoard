@@ -1,7 +1,10 @@
 body {
   margin: 0px;
   padding: 0px;
-  background-color: #353332;
-  /* display: none; */
+  background-color: #5f5e5d;
+
+  /* display: flex;
+  height: 100vh; */
+
   /* height: fit-content; */
 }

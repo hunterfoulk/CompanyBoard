@@ -12,6 +12,16 @@ export default function Categorysearch() {
   console.log("categoryyy", category);
   useEffect(() => {
     handleFilteredSearch(category);
+
+    return () => {
+      dispatch({
+        type: "SEARCH_RESULTS",
+        searchResults: {
+          results: [],
+          isFetching: true,
+        },
+      });
+    };
   }, []);
 
   const handleBoardJoin = (result) => {
@@ -40,6 +50,13 @@ export default function Categorysearch() {
         {searchResults.results.map((result) => {
           let defaultPic = result.board_name.charAt(0).toUpperCase();
           let members = result.users.length;
+          let string = result.description;
+          let length = 450;
+          var trimmedString =
+            string.length > length
+              ? string.substring(0, length - 3) + "..."
+              : string;
+
           result.requests.forEach((request) => {
             console.log(request);
             if (request.user_id === auth.user.user_id) {
@@ -53,7 +70,7 @@ export default function Categorysearch() {
             if (user.user_id === auth.user.user_id) {
               result.inBoard = true;
             } else {
-              result.inBoard = false;
+              // result.inBoard = false;
             }
           });
           return (
@@ -90,9 +107,7 @@ export default function Categorysearch() {
                   <span>{result.category}</span>
                 </div>
                 <div className="board-description">
-                  {result.description !== "null" ? (
-                    <p>{result.description}</p>
-                  ) : null}
+                  {trimmedString !== "null" ? <p>{trimmedString}</p> : null}
                 </div>
               </div>
               <div className="request-board-container">
@@ -116,7 +131,7 @@ export default function Categorysearch() {
                       </div>
                     );
                   }
-                  if (result.inBored === false && result.requested === false) {
+                  if (result.requests.length <= 0) {
                     return (
                       <button onClick={() => handleBoardJoin(result)}>
                         Request To Join

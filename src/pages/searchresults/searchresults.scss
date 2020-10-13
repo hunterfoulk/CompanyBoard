@@ -3,21 +3,17 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  // min-height: 100vh;
   height: 100%;
-  // height: fit-content;
-
   // background-color: #53535360;
   background: linear-gradient(transparent 100px, #2b2a2a 300px),
     url(../../images/newstars2.png) center top/auto 450px repeat-x;
-
-  flex: 1;
-  padding: 0px 135.5px;
+  // padding: 0px 135.5px;
   .results-header {
     display: flex;
     justify-content: center;
     // background-color: green;
     margin-top: 50px;
+    text-align: center;
     h1 {
       color: #e6e6e6;
       font-size: 35px;
@@ -35,8 +31,8 @@
     .search-result {
       display: flex;
       flex-direction: column;
-      min-width: 27.3333%;
-      max-width: 27.3333%;
+      min-width: 400px;
+      max-width: 400px;
       height: fit-content;
       border-radius: 4px;
       margin: 20px;
@@ -44,6 +40,7 @@
       .result-users-header {
         display: flex;
         justify-content: flex-end;
+
         width: 100%;
         .left {
           width: 50%;
@@ -88,6 +85,7 @@
         background-color: rgb(25, 25, 27);
         width: 100%;
         height: 55px;
+        text-align: center;
         .result-header-left {
           display: flex;
           width: 15%;
@@ -176,6 +174,26 @@
       }
       button:hover {
         background-color: #7289da;
+      }
+    }
+  }
+}
+
+@media (max-width: 1315px) {
+  .search-results-container {
+    .search-result {
+      // background-color: Red;
+      width: 30%;
+    }
+  }
+}
+@media (max-width: 450px) {
+  .search-results-main {
+    .results-header {
+      // background-color: rgb(110, 134, 53);
+      // width: 30%;
+      h1 {
+        font-size: 24px;
       }
     }
   }

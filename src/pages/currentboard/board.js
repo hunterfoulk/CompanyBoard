@@ -59,6 +59,7 @@ export default function Board() {
     deleteStatus,
     leaveBoard,
     deleteBoard,
+    declineRequest,
   } = useBoards();
   const [
     {
@@ -123,6 +124,7 @@ export default function Board() {
   const fullPath = window.location.pathname;
   let board_id = window.location.pathname.replace("/board/", "");
   let user_id = auth.user.user_id;
+
   useEffect(() => {
     getCurrentBoard(board_id, user_id);
     getCurrentBoardStatuses(board_id);
@@ -566,6 +568,19 @@ export default function Board() {
     await acceptRequest(payload);
   };
 
+  const handleBoardDecline = async (user_id) => {
+    dispatch({
+      type: "FILTER_BOARD_REQUESTS",
+      user_id: user_id,
+    });
+    let payload = {
+      user_id: user_id,
+      board_id: currentBoardUsers.board.board_id,
+    };
+
+    await declineRequest(payload);
+  };
+
   const createStatusOpen = () => {
     setCreateStatus(true);
     setBoardDropDown(false);
@@ -602,14 +617,6 @@ export default function Board() {
     };
     await leaveBoard(payload);
     history.push("/search");
-  };
-
-  const handleDeleteBoard = async () => {
-    let payload = {
-      user_id: auth.user.user_id,
-      board_id: board_id,
-    };
-    await deleteBoard(payload);
   };
 
   return (
@@ -1097,12 +1104,12 @@ export default function Board() {
                   <span>Notifications</span>
                 </div>
                 <div className="notifications-container">
-                  {boardRequests.requests.length < 1 ? (
+                  {currentBoardUsers.board.requests.length < 1 ? (
                     <span style={{ textAlign: "center" }}>
                       No New Notifications
                     </span>
                   ) : null}
-                  {boardRequests.requests.map((request) => (
+                  {currentBoardUsers.board.requests.map((request) => (
                     <div className="notification-request">
                       <div className="notification-content">
                         <div className="notification-left">
@@ -1120,31 +1127,40 @@ export default function Board() {
                         >
                           Accept
                         </button>
-                        <button className="decline-button">Decline</button>
+                        <button
+                          className="decline-button"
+                          onClick={() => handleBoardDecline(request.user_id)}
+                        >
+                          Decline
+                        </button>
                       </div>
                     </div>
                   ))}
                 </div>
               </div>
             )}
-            {currentBoardUsers.board.creator === auth.user.user_id ? (
-              <span
-                className="bell-icon"
-                onClick={() => setBellModal(!bellModal)}
-              >
-                <FaBell />
-              </span>
-            ) : null}
 
-            <span
-              className="settings-icon"
-              onClick={() => setSettingsPopup(true)}
-            >
-              <IoMdSettings
-                style={{ marginRight: "5px", marginBottom: "1px" }}
-              />
-              Settings
-            </span>
+            <div className="settings-holder">
+              {currentBoardUsers.board.creator === auth.user.user_id ? (
+                <span className="bell-icon" onClick={() => setBellModal(true)}>
+                  <FaBell />
+                  {currentBoardUsers.board.requests.length > 0 ? (
+                    <span className="bell-users-icon">
+                      {currentBoardUsers.board.requests.length}
+                    </span>
+                  ) : null}
+                </span>
+              ) : null}
+              <span
+                className="settings-icon"
+                onClick={() => setSettingsPopup(true)}
+              >
+                <IoMdSettings
+                  style={{ marginRight: "5px", marginBottom: "1px" }}
+                />
+                Settings
+              </span>
+            </div>
             {settingsPopup && (
               <Draggable
                 onDrag={() => setDraggingWindow(true)}
@@ -1158,7 +1174,7 @@ export default function Board() {
                     <IoMdSettings
                       style={{
                         position: "relative",
-                        top: "5px",
+
                         right: "2px",
                         color: "black",
                       }}

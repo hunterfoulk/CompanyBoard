@@ -1,14 +1,9 @@
 .app-container {
   display: flex;
-  // flex-direction: column;
-  // background-color: rgb(190, 119, 119);
-  // height: fit-content;
-  // overflow-y: hidden;
   height: 100vh;
-  // margin-top: 28px;
-  // flex: 1;
-  align-items: stretch;
+  // align-items: stretch;
   padding: 0px;
+  // overflow-y: hidden;
   overflow-x: hidden;
   .profile-modal {
     display: flex;

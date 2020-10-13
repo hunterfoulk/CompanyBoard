@@ -11,7 +11,6 @@ import "./App.scss";
 import Login from "./components/auth/login";
 import Signup from "./components/auth/signup";
 import Home from "./pages/home/home";
-import Boards from "./pages/boards/boards";
 import { useStateValue } from "./state";
 import Board from "./pages/currentboard/board";
 import Searchresults from "./pages/searchresults/searchresults";
